@@ -36,19 +36,15 @@ document.addEventListener('DOMContentLoaded', function() {
         spiderfyOnMaxZoom: false,    
         showCoverageOnHover: false, 
         zoomToBoundsOnClick: false,
-        maxClusterRadius: 80, // Balanced cluster density
+        maxClusterRadius: 150, 
         
         iconCreateFunction: function(cluster) {
             const count = cluster.getChildCount();
             let sizeClass = 'marker-cluster-';
 
-            if (count < 50) {
-                sizeClass += 'small';
-            } else if (count < 500) {
-                sizeClass += 'medium';
-            } else {
-                sizeClass += 'large';
-            }
+            if (count < 50) sizeClass += 'small';
+            else if (count < 500) sizeClass += 'medium';
+            else sizeClass += 'large';
 
             return L.divIcon({
                 html: `<div><span>${count}</span></div>`,
@@ -102,6 +98,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 const marker = L.marker([lat, lon], { icon: dotIcon }).bindPopup(popupContent);
+                
+                // CRITICAL: Attach the full data object to the marker for later use
+                marker.personData = person; 
+                
                 markers.addLayer(marker);
             }
         });
@@ -113,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // 4. EVENT LISTENERS
     // ==========================================
     
-    // Filtering Logic
     mainFilter.addEventListener('change', function(e) {
         const selectedMain = e.target.value;
         subFilter.innerHTML = ''; 
@@ -135,56 +134,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
     subFilter.addEventListener('change', () => renderMarkers());
 
-    // Theme Toggle
     const themeToggle = document.getElementById('theme-toggle');
     themeToggle.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
         themeToggle.innerText = document.body.classList.contains('dark-mode') ? '☀️ Switch to Light Mode' : '🌙 Switch to Dark Mode';
     });
 
-    // Cluster Interaction Logic
+    // ==========================================
+    // 5. CLUSTER & PANEL INTERACTION
+    // ==========================================
     markers.on('clusterclick', function (a) {
         const cluster = a.layer;
         const bounds = cluster.getBounds();
         const isStacked = bounds.getNorthEast().equals(bounds.getSouthWest());
 
         if (isStacked || map.getZoom() === map.getMaxZoom()) {
-            // OPEN PANELS
             const clusterMarkers = cluster.getAllChildMarkers();
             const listContent = document.getElementById('list-content');
             const panel = document.getElementById('cluster-list-panel');
             
-            document.getElementById('panel-title').innerText = `${clusterMarkers.length} People Here`;
+            // NEW: Set Title (City/Region) and Subtitle (Count)
+            const firstPerson = clusterMarkers[0].personData;
+            document.getElementById('panel-title').innerText = firstPerson.birthplace || "Location";
+            document.getElementById('panel-subtitle').innerText = `${clusterMarkers.length} People Here`;
+            
             listContent.innerHTML = '';
             
             clusterMarkers.forEach(marker => {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = marker.getPopup().getContent();
-                const name = tempDiv.querySelector('.popup-title').innerText;
-                const category = tempDiv.querySelector('.popup-category').innerText;
-
+                const data = marker.personData;
                 const item = document.createElement('div');
                 item.className = 'list-item';
-                item.innerHTML = `<div><strong>${name}</strong></div><div style="font-size:0.85em; color:gray;">${category}</div>`;
+                item.innerHTML = `<div><strong>${data.name}</strong></div><div style="font-size:0.85em; color:gray;">${data.topic}</div>`;
                 
-                // Click person in list -> Open Bottom Panel
                 item.onclick = () => {
                     const detailPanel = document.getElementById('person-detail-panel');
                     const detailContent = document.getElementById('detail-content');
-                    const content = marker.getPopup().getContent();
                     
-                    const tDiv = document.createElement('div');
-                    tDiv.innerHTML = content;
-                    document.getElementById('detail-name').innerText = tDiv.querySelector('.popup-title').innerText;
-                    detailContent.innerHTML = content; 
+                    document.getElementById('detail-name').innerText = data.name;
+                    detailContent.innerHTML = marker.getPopup().getContent(); 
                     if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
 
                     detailPanel.classList.add('open');
                     
-                    // Center person: Adjust for 350px left panel and ~50vh bottom panel
                     map.flyTo(marker.getLatLng(), map.getZoom(), {
                         paddingBottomRight: [0, window.innerHeight / 2],
-                        paddingTopLeft: [370, 0],
+                        paddingTopLeft: [820, 0], // Adjusted for 20px gap
                         duration: 0.5
                     });
                 };
@@ -192,7 +186,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             panel.classList.add('open');
         } else {
-            // SMOOTH ZOOM
             map.flyToBounds(bounds, {
                 padding: [370, 20], 
                 duration: 0.8,
@@ -201,11 +194,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Close on Map Click
     map.on('click', () => closeAllPanels());
 
     // ==========================================
-    // 5. DATA FETCH
+    // 6. INITIAL LOAD
     // ==========================================
     fetch('data/map_data_with_topics.json')
         .then(response => response.json())
@@ -217,11 +209,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ==========================================
-// 6. GLOBAL UTILITIES
+// 7. GLOBAL UTILITIES
 // ==========================================
 window.closeAllPanels = function() {
-    // Slide person detail DOWN
     document.getElementById('person-detail-panel').classList.remove('open');
-    // Slide list panel LEFT
     document.getElementById('cluster-list-panel').classList.remove('open');
 };

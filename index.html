@@ -14,9 +14,12 @@
 <body>
 
     <div id="cluster-list-panel">
-        <div class="panel-header">
-            <h2 id="panel-title" style="margin:0; font-size: 1.2em;">People at this location</h2>
-            <span class="close-panel" onclick="closeAllPanels()">&times;</span>
+        <div class="panel-header" style="flex-direction: column; align-items: flex-start;">
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <h2 id="panel-title" style="margin:0; font-size: 1.2em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Location Name</h2>
+                <span class="close-panel" onclick="closeAllPanels()">&times;</span>
+            </div>
+            <div id="panel-subtitle" style="font-size: 0.9em; opacity: 0.9; margin-top: 4px;">0 People Here</div>
         </div>
         <div id="list-content"></div>
     </div>
