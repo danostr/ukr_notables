@@ -36,20 +36,18 @@ document.addEventListener('DOMContentLoaded', function() {
         spiderfyOnMaxZoom: false,    
         showCoverageOnHover: false, 
         zoomToBoundsOnClick: false,
-        maxClusterRadius: 150,
+        maxClusterRadius: 80, // Balanced cluster density
         
-        // NEW: Customizing the boundaries for Small, Medium, and Large clusters
         iconCreateFunction: function(cluster) {
             const count = cluster.getChildCount();
             let sizeClass = 'marker-cluster-';
 
-            // Define your new boundaries here!
             if (count < 50) {
-                sizeClass += 'small';     // Less than 50 people
+                sizeClass += 'small';
             } else if (count < 500) {
-                sizeClass += 'medium';    // Between 50 and 499 people
+                sizeClass += 'medium';
             } else {
-                sizeClass += 'large';     // 500 people or more
+                sizeClass += 'large';
             }
 
             return L.divIcon({
@@ -60,8 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    
-
     // ==========================================
     // 3. CORE RENDERING ENGINE
     // ==========================================
@@ -69,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const mainTopic = mainFilter.value;
         const subTopic = subFilter.value;
         
-        console.log(`Filtering for: ${mainTopic} > ${subTopic || 'All'}`);
         markers.clearLayers(); 
 
         allPeople.forEach(person => {
@@ -82,9 +77,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const lat = parseFloat(match[2]);
 
                 let wikiLinksHTML = "";
-                if (person.enWiki) wikiLinksHTML += `<a href="${person.enWiki}" target="_blank" style="text-decoration:none;">🇬🇧</a> `;
-                if (person.ukWiki) wikiLinksHTML += `<a href="${person.ukWiki}" target="_blank" style="text-decoration:none;">🇺🇦</a> `;
-                if (person.ruWiki) wikiLinksHTML += `<a href="${person.ruWiki}" target="_blank" style="text-decoration:none;">🇷🇺</a> `;
+                if (person.enWiki) wikiLinksHTML += `<a href="${person.enWiki}" target="_blank">🇬🇧</a> `;
+                if (person.ukWiki) wikiLinksHTML += `<a href="${person.ukWiki}" target="_blank">🇺🇦</a> `;
+                if (person.ruWiki) wikiLinksHTML += `<a href="${person.ruWiki}" target="_blank">🇷🇺</a> `;
 
                 const subTopicText = (person.sub_topic && person.sub_topic !== 'Unknown') ? ` > ${person.sub_topic}` : '';
                 const occupationsText = (person.occupations && person.occupations.length > 0) ? person.occupations.join(', ') : '<i>Not specified</i>';
@@ -100,11 +95,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
 
-                // Create a custom div-based icon instead of the default image pin
                 const dotIcon = L.divIcon({
                     className: 'custom-dot-marker',
-                    iconSize: [12, 12], // Size of the dot in pixels
-                    iconAnchor: [6, 6]  // Anchor the center of the dot to the coordinates
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
                 });
 
                 const marker = L.marker([lat, lon], { icon: dotIcon }).bindPopup(popupContent);
@@ -113,20 +107,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         map.addLayer(markers);
-        console.log(`Markers updated: ${markers.getLayers().length} people visible.`);
     }
 
     // ==========================================
     // 4. EVENT LISTENERS
     // ==========================================
+    
+    // Filtering Logic
     mainFilter.addEventListener('change', function(e) {
         const selectedMain = e.target.value;
         subFilter.innerHTML = ''; 
-        
         if (selectedMain !== 'all' && subTopicsMap[selectedMain]) {
             subFilter.style.display = 'block';
             subLabel.style.display = 'inline-block';
-            
             subTopicsMap[selectedMain].forEach(st => {
                 const opt = document.createElement('option');
                 opt.value = st;
@@ -137,35 +130,26 @@ document.addEventListener('DOMContentLoaded', function() {
             subFilter.style.display = 'none';
             subLabel.style.display = 'none';
         }
-        
         renderMarkers(); 
     });
 
-    subFilter.addEventListener('change', function() {
-        renderMarkers(); 
-    });
+    subFilter.addEventListener('change', () => renderMarkers());
 
+    // Theme Toggle
     const themeToggle = document.getElementById('theme-toggle');
     themeToggle.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
-        
-        if (document.body.classList.contains('dark-mode')) {
-            themeToggle.innerText = '☀️ Switch to Light Mode';
-        } else {
-            themeToggle.innerText = '🌙 Switch to Dark Mode';
-        }
+        themeToggle.innerText = document.body.classList.contains('dark-mode') ? '☀️ Switch to Light Mode' : '🌙 Switch to Dark Mode';
     });
 
-    // Listen for cluster clicks
+    // Cluster Interaction Logic
     markers.on('clusterclick', function (a) {
         const cluster = a.layer;
         const bounds = cluster.getBounds();
-        
-        // Check if all markers in the cluster have the exact same coordinates
         const isStacked = bounds.getNorthEast().equals(bounds.getSouthWest());
 
         if (isStacked || map.getZoom() === map.getMaxZoom()) {
-            // --- LOGIC FOR THE SIDE PANEL ---
+            // OPEN PANELS
             const clusterMarkers = cluster.getAllChildMarkers();
             const listContent = document.getElementById('list-content');
             const panel = document.getElementById('cluster-list-panel');
@@ -181,86 +165,63 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const item = document.createElement('div');
                 item.className = 'list-item';
-                item.innerHTML = `
-                    <div style="font-weight:bold;">${name}</div>
-                    <div style="font-size:0.85em; color:gray;">${category}</div>
-                `;
+                item.innerHTML = `<div><strong>${name}</strong></div><div style="font-size:0.85em; color:gray;">${category}</div>`;
                 
-                // Inside your clusterMarkers.forEach loop:
+                // Click person in list -> Open Bottom Panel
                 item.onclick = () => {
                     const detailPanel = document.getElementById('person-detail-panel');
                     const detailContent = document.getElementById('detail-content');
                     const content = marker.getPopup().getContent();
                     
-                    // Fill the content
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = content;
-                    const name = tempDiv.querySelector('.popup-title').innerText;
-                    
-                    document.getElementById('detail-name').innerText = name;
+                    const tDiv = document.createElement('div');
+                    tDiv.innerHTML = content;
+                    document.getElementById('detail-name').innerText = tDiv.querySelector('.popup-title').innerText;
                     detailContent.innerHTML = content; 
-                    
-                    if(detailContent.querySelector('.popup-title')) {
-                        detailContent.querySelector('.popup-title').remove();
-                    }
+                    if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
 
-                    // Slide the person panel UP from the bottom
                     detailPanel.classList.add('open');
                     
-                    // Adjust map so the point is visible above the bottom panel
+                    // Center person: Adjust for 350px left panel and ~50vh bottom panel
                     map.flyTo(marker.getLatLng(), map.getZoom(), {
-                        paddingBottomRight: [0, window.innerHeight / 2], // Account for 50vh height
-                        paddingTopLeft: [370, 0], // Account for 350px width
+                        paddingBottomRight: [0, window.innerHeight / 2],
+                        paddingTopLeft: [370, 0],
                         duration: 0.5
                     });
                 };
-
-                
                 listContent.appendChild(item);
             });
-
             panel.classList.add('open');
         } else {
-            // --- LOGIC FOR SMOOTH ZOOMING ---
-            // This animates the map to fit the markers inside the cluster
+            // SMOOTH ZOOM
             map.flyToBounds(bounds, {
-                padding: [370, 20], // Adds a little breathing room around the edges
-                duration: 0.8,      // Animation time in seconds
+                padding: [370, 20], 
+                duration: 0.8,
                 easeLinearity: 0.35
             });
         }
     });
 
-    // Close the panel if the user clicks the map background
-    map.on('click', () => {
-        document.getElementById('cluster-list-panel').classList.remove('open');
-    });
+    // Close on Map Click
+    map.on('click', () => closeAllPanels());
 
     // ==========================================
-    // 5. DATA FETCH & EXECUTION
+    // 5. DATA FETCH
     // ==========================================
-    console.log("Fetching categorized map data...");
     fetch('data/map_data_with_topics.json')
-        .then(response => {
-            if (!response.ok) throw new Error("Network response was not ok");
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             allPeople = data;
-            console.log(`Data successfully loaded. Total records: ${allPeople.length}`);
             renderMarkers(); 
         })
-        .catch(err => {
-            console.error("Error loading JSON data:", err);
-            alert("Failed to load map data. Make sure you are running a local web server.");
-        });
+        .catch(err => console.error("Error loading JSON data:", err));
 });
 
-// Global close function
+// ==========================================
+// 6. GLOBAL UTILITIES
+// ==========================================
 window.closeAllPanels = function() {
-    // 1. Person panel slides DOWN
+    // Slide person detail DOWN
     document.getElementById('person-detail-panel').classList.remove('open');
-    
-    // 2. People Here panel slides LEFT
+    // Slide list panel LEFT
     document.getElementById('cluster-list-panel').classList.remove('open');
 };
