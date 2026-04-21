@@ -36,7 +36,7 @@
     console.log("Starting to fetch data...");
 
     // Point to the new high-quality file
-    fetch('data/people_with_wiki.json')
+    fetch('data/final_map_data.json')
         .then(response => response.json())
         .then(people => {
             console.log("High-quality data loaded:", people.length);
