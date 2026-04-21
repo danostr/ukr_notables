@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const map = L.map('map').setView([48.3794, 31.1656], 6);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
+        maxZoom: 18,
         attribution: '© OpenStreetMap contributors, © CARTO'
     }).addTo(map);
 
@@ -72,22 +72,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 const lon = parseFloat(match[1]);
                 const lat = parseFloat(match[2]);
 
-                let wikiLinksHTML = "";
-                if (person.enWiki) wikiLinksHTML += `<a href="${person.enWiki}" target="_blank">🇬🇧</a> `;
-                if (person.ukWiki) wikiLinksHTML += `<a href="${person.ukWiki}" target="_blank">🇺🇦</a> `;
-                if (person.ruWiki) wikiLinksHTML += `<a href="${person.ruWiki}" target="_blank">🇷🇺</a> `;
+                // --- NEW WIKI BUTTON HTML ---
+                let wikiButtonsHTML = `<div class="wiki-button-container">`;
+                if (person.enWiki) wikiButtonsHTML += `<a href="${person.enWiki}" target="_blank" class="wiki-btn btn-en">EN</a>`;
+                if (person.ukWiki) wikiButtonsHTML += `<a href="${person.ukWiki}" target="_blank" class="wiki-btn btn-uk">UA</a>`;
+                if (person.ruWiki) wikiButtonsHTML += `<a href="${person.ruWiki}" target="_blank" class="wiki-btn btn-ru">RU</a>`;
+                wikiButtonsHTML += `</div>`;
 
                 const subTopicText = (person.sub_topic && person.sub_topic !== 'Unknown') ? ` > ${person.sub_topic}` : '';
                 const occupationsText = (person.occupations && person.occupations.length > 0) ? person.occupations.join(', ') : '<i>Not specified</i>';
 
+                // --- NEW POPUP CARD HTML ---
                 const popupContent = `
                     <div class="popup-container">
                         <h3 class="popup-title">${person.name}</h3>
-                        <p class="popup-detail"><b>Birthplace:</b> ${person.birthplace}</p>
-                        <p class="popup-detail"><b>Category:</b> <span class="popup-category">${person.topic}${subTopicText}</span></p>
-                        <p class="popup-detail"><b>Occupation:</b> ${occupationsText}</p>
-                        <hr class="popup-divider">
-                        <div class="popup-links">${wikiLinksHTML}</div>
+                        <div class="popup-body">
+                            <p class="popup-detail"><b>Birthplace:</b> ${person.birthplace}</p>
+                            <p class="popup-detail"><b>Category:</b> <span class="popup-category">${person.topic}${subTopicText}</span></p>
+                            <p class="popup-detail"><b>Occupation:</b> ${occupationsText}</p>
+                            ${wikiButtonsHTML}
+                        </div>
                     </div>
                 `;
 

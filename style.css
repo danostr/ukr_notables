@@ -1,16 +1,30 @@
 /* ==========================================
-   1. BASE RESETS & MAP
+   1. BASE RESETS & GLOBAL SCROLLBAR
    ========================================== */
-body { margin: 0; padding: 0; font-family: sans-serif; overflow: hidden; }
+body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+
+/* Modern Slim Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { 
+    background: #cbd5e1; 
+    border-radius: 10px; 
+    border: 2px solid transparent; 
+    background-clip: content-box; 
+}
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+body.dark-mode ::-webkit-scrollbar-thumb { background: #4b5563; }
+body.dark-mode ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
 
 #map { height: 100vh; width: 100vw; background-color: #f8f9fa; }
 .leaflet-tile-pane { transition: filter 0.3s ease, opacity 0.3s ease; }
 
 /* Dark Mode: Map Blending */
-body.dark-mode #map { background-color: #143263; }
+body.dark-mode #map { background-color: #111827; }
 body.dark-mode .leaflet-tile-pane {
-    filter: invert(100%) brightness(110%);
-    opacity: 0.6; 
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+    opacity: 0.7; 
 }
 
 /* ==========================================
@@ -23,37 +37,35 @@ body.dark-mode .leaflet-tile-pane {
     z-index: 1000; 
     background: white; 
     padding: 15px; 
-    border-radius: 8px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
-#filter-container select { width: 200px; margin-top: 5px; margin-bottom: 10px; padding: 5px; }
+#filter-container select { width: 200px; margin-top: 5px; margin-bottom: 10px; padding: 8px; border-radius: 6px; border: 1px solid #ddd; outline: none; }
 
 #theme-toggle {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     background-color: #0057b7;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.2s;
 }
+#theme-toggle:hover { background-color: #004494; }
 
-/* Dark Mode: Filter Panel */
-body.dark-mode #filter-container { background-color: #1a1a2e; color: #e0e0e0; }
-body.dark-mode #filter-container select { background-color: #2b2b45; color: #ffffff; border: 1px solid #4a4a6a; }
-body.dark-mode #theme-toggle { background-color: #ffd700; color: #1a1a2e; }
+body.dark-mode #filter-container { background-color: #1f2937; color: #e0e0e0; border-color: #374151; }
+body.dark-mode #filter-container select { background-color: #374151; color: #ffffff; border: 1px solid #4b5563; }
+body.dark-mode #theme-toggle { background-color: #fbbf24; color: #111827; }
+body.dark-mode #theme-toggle:hover { background-color: #f59e0b; }
 
 /* ==========================================
    3. CLUSTERS & MARKERS
    ========================================== */
-
-/* Cluster Text */
-.marker-cluster div { color: white !important; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); }
-body.dark-mode .marker-cluster div { text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); }
-
-/* Cluster Gradients (Light Mode) */
+.marker-cluster div { color: white !important; font-weight: bold; }
 .marker-cluster-small { background-color: rgba(56, 189, 248, 0.4) !important; }
 .marker-cluster-small div { background-color: rgba(2, 132, 199, 0.9) !important; }
 .marker-cluster-medium { background-color: rgba(59, 130, 246, 0.4) !important; }
@@ -61,23 +73,131 @@ body.dark-mode .marker-cluster div { text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8)
 .marker-cluster-large { background-color: rgba(49, 46, 129, 0.4) !important; }
 .marker-cluster-large div { background-color: rgba(30, 27, 75, 0.9) !important; }
 
-/* Cluster Gradients (Dark Mode) */
-body.dark-mode .marker-cluster-small { background-color: rgba(253, 224, 71, 0.4) !important; }
-body.dark-mode .marker-cluster-small div { background-color: rgba(234, 179, 8, 0.9) !important; }
-body.dark-mode .marker-cluster-medium { background-color: rgba(251, 146, 60, 0.4) !important; }
-body.dark-mode .marker-cluster-medium div { background-color: rgba(234, 88, 12, 0.9) !important; }
-body.dark-mode .marker-cluster-large { background-color: rgba(248, 113, 113, 0.4) !important; }
-body.dark-mode .marker-cluster-large div { background-color: rgba(220, 38, 38, 0.9) !important; }
-
 /* Custom Dot Markers */
-.custom-dot-marker { background-color: #0057b7; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.4); }
-body.dark-mode .custom-dot-marker { background-color: #ffd700; border: 2px solid #143263; }
+.custom-dot-marker { background-color: #1e40af; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.3); }
+body.dark-mode .custom-dot-marker { background-color: #fbbf24; border: 2px solid #111827; }
 
 /* ==========================================
-   4. SIDE PANELS: LEFT & BOTTOM LAYOUT
+   4. LEAFLET POPUP "CARDS" (SINGLE POINTS)
    ========================================== */
+.leaflet-popup-content-wrapper {
+    padding: 0 !important;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.leaflet-popup-content { margin: 0 !important; width: 300px !important; }
 
-/* Common Panel Header Styles */
+/* Popup Body & Text */
+.popup-container { padding: 0; }
+.popup-body { padding: 15px; color: #334155; }
+.popup-detail { margin: 5px 0; font-size: 0.9em; }
+.popup-detail b { color: #0f172a; }
+
+/* Bold & Colored Popup Title */
+.popup-title { 
+    background: #f1f5f9; 
+    color: #1e40af; /* Bold Blue */
+    margin: 0; 
+    padding: 15px; 
+    font-size: 1.2rem; 
+    font-weight: 800;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Dark Mode Popups */
+body.dark-mode .leaflet-popup-content-wrapper,
+body.dark-mode .leaflet-popup-tip {
+    background: #1f2937 !important;
+    color: #f3f4f6 !important;
+}
+body.dark-mode .popup-body { color: #d1d5db; }
+body.dark-mode .popup-detail b { color: #f9fafb; }
+body.dark-mode .popup-title { 
+    background: #374151; 
+    color: #fbbf24; /* Bold Yellow/Orange */
+    border-bottom: 1px solid #4b5563; 
+}
+
+/* ==========================================
+   5. WIKILINK BUTTONS (PILL-SHAPED TEXT)
+   ========================================== */
+.wiki-button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+/* Force override Leaflet's default anchor styles */
+.leaflet-container a.wiki-btn,
+#detail-content a.wiki-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 6px 14px !important;
+    border-radius: 20px !important; 
+    text-decoration: none !important; 
+    font-weight: 700 !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.05em !important;
+    transition: all 0.2s ease !important;
+    border: 1px solid transparent !important;
+}
+
+/* Light Mode Link Colors */
+.leaflet-container a.btn-en, #detail-content a.btn-en { background: #dbeafe !important; color: #1e40af !important; }
+.leaflet-container a.btn-uk, #detail-content a.btn-uk { background: #fef9c3 !important; color: #854d0e !important; }
+.leaflet-container a.btn-ru, #detail-content a.btn-ru { background: #fee2e2 !important; color: #991b1b !important; }
+
+.leaflet-container a.wiki-btn:hover,
+#detail-content a.wiki-btn:hover { 
+    transform: translateY(-2px) !important; 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1) !important; 
+    filter: brightness(95%) !important; 
+}
+
+/* Dark Mode Link Colors */
+body.dark-mode .leaflet-container a.btn-en, 
+body.dark-mode #detail-content a.btn-en { background: #1e3a8a !important; color: #dbeafe !important; }
+
+body.dark-mode .leaflet-container a.btn-uk, 
+body.dark-mode #detail-content a.btn-uk { background: #713f12 !important; color: #fef9c3 !important; }
+
+body.dark-mode .leaflet-container a.btn-ru, 
+body.dark-mode #detail-content a.btn-ru { background: #7f1d1d !important; color: #fee2e2 !important; }
+
+.wiki-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 20px; /* Pill Shape */
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+/* Light Mode Link Colors */
+.btn-en { background: #dbeafe; color: #1e40af; }
+.btn-uk { background: #fef9c3; color: #854d0e; }
+.btn-ru { background: #fee2e2; color: #991b1b; }
+
+.wiki-btn:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
+    filter: brightness(95%); 
+}
+
+/* Dark Mode Link Colors */
+body.dark-mode .btn-en { background: #1e3a8a; color: #dbeafe; }
+body.dark-mode .btn-uk { background: #713f12; color: #fef9c3; }
+body.dark-mode .btn-ru { background: #7f1d1d; color: #fee2e2; }
+
+/* ==========================================
+   6. SIDE PANELS: LEFT & BOTTOM LAYOUT
+   ========================================== */
 .panel-header {
     padding: 20px;
     background: #0057b7;
@@ -86,76 +206,45 @@ body.dark-mode .custom-dot-marker { background-color: #ffd700; border: 2px solid
     justify-content: space-between;
     align-items: center;
 }
-.close-panel { cursor: pointer; font-size: 24px; }
+.panel-header h2 { font-weight: 800; }
+.close-panel { cursor: pointer; font-size: 24px; opacity: 0.7; transition: opacity 0.2s; }
+.close-panel:hover { opacity: 1; }
 
-/* --- PEOPLE HERE PANEL (LEFT SIDE) --- */
+/* --- PEOPLE HERE PANEL --- */
 #cluster-list-panel {
-    position: absolute;
-    top: 0;
-    left: -350px; /* Hidden */
-    width: 350px;
-    height: 100vh;
-    background: white;
-    z-index: 2010;
-    transition: left 0.4s ease-out;
-    box-shadow: 5px 0 15px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
+    position: absolute; top: 0; left: -350px; width: 350px; height: 100vh;
+    background: white; z-index: 2010; transition: left 0.4s ease-out;
+    box-shadow: 5px 0 25px rgba(0,0,0,0.1); display: flex; flex-direction: column;
 }
 #cluster-list-panel.open { left: 0; }
 
-#list-content { flex: 1; overflow-y: auto; background: #fafafa; }
-.list-item { padding: 15px 20px; border-bottom: 1px solid #eee; cursor: pointer; background: white; transition: background 0.2s; }
-.list-item:hover { background: #f1f5f9; }
+#list-content { flex: 1; overflow-y: auto; }
+.list-item { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s; }
+.list-item:hover { background: #f8fafc; }
 
-/* --- PERSON DETAIL PANEL (BOTTOM SIDE) --- */
+/* --- PERSON DETAIL PANEL --- */
 #person-detail-panel {
-    position: absolute;
-    bottom: -60vh; /* Hidden below screen */
-    left: 370px;   /* Positioned with 20px gap from List Panel */
-    width: 400px;
-    height: 55vh;  /* Approx middle of screen */
-    background: white;
-    z-index: 2005;
-    transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-    border-radius: 12px 12px 0 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    position: absolute; bottom: -60vh; left: 370px; width: 400px; height: 55vh;
+    background: white; z-index: 2005; transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.1); border-radius: 16px 16px 0 0;
+    display: flex; flex-direction: column; overflow: hidden;
 }
 #person-detail-panel.open { bottom: 0; }
-
-#detail-content { flex: 1; overflow-y: auto; padding: 20px; }
+#detail-content { flex: 1; overflow-y: auto; padding: 25px; line-height: 1.6; }
 
 /* ==========================================
-   5. PANEL THEME COLORS (DYNAMIC HEADERS)
+   7. SIDE PANEL THEME OVERRIDES
    ========================================== */
+/* Light Mode Details */
+#person-detail-panel .panel-header { background: #f1f5f9 !important; color: #1e40af !important; border-bottom: 1px solid #e2e8f0; }
 
-/* People Here Header: Orange in Dark Mode */
-body.dark-mode #cluster-list-panel .panel-header {
-    background: #ea580c !important; /* Vibrant Orange */
-    color: white !important;
-}
+/* Dark Mode Details */
+body.dark-mode #cluster-list-panel .panel-header { background: #ea580c !important; color: white !important;}
+body.dark-mode #person-detail-panel .panel-header { background: #374151 !important; color: #fbbf24 !important; border-bottom: 1px solid #4b5563;}
 
-/* Detail Header: Light Blue in Light Mode */
-#person-detail-panel .panel-header {
-    background: #e3f2fd !important; 
-    color: #0057b7 !important;
-}
-
-/* Detail Header: Yellow in Dark Mode */
-body.dark-mode #person-detail-panel .panel-header {
-    background: #ffd700 !important; 
-    color: #1a1a2e !important;
-}
-
-/* Dark Mode Colors for Panel Bodies */
 body.dark-mode #cluster-list-panel, 
 body.dark-mode #person-detail-panel,
-body.dark-mode #list-content { background: #1a1a2e; color: white; }
+body.dark-mode #list-content { background: #1f2937; color: #f8fafc; }
 
-body.dark-mode .list-item { background: #1a1a2e; border-bottom-color: #2b2b45; color: white; }
-body.dark-mode .list-item:hover { background: #2b2b45; }
-body.dark-mode .panel-header { background: #143263; }
-
+body.dark-mode .list-item { border-bottom-color: #374151; }
+body.dark-mode .list-item:hover { background: #374151; }
