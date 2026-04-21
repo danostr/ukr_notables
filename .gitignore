@@ -1,1 +1,8 @@
+# Ignore raw data and debug files
+data/notable_people.json
+data/cleaned_notable_people.json
+data/people_junk.json
+data/people_only_occupations.json
+data/people_with_wiki.json
 debug_error.txt
+__pycache__/

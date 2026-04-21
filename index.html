@@ -24,53 +24,64 @@
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
     <script>
-        var map = L.map('map').setView([48.3794, 31.1656], 6);
+    var map = L.map('map').setView([48.3794, 31.1656], 6);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-        // NEW: Create a cluster group layer
-        var markers = L.markerClusterGroup();
+    var markers = L.markerClusterGroup();
 
-        fetch('notable_people.json')
-            .then(response => response.json())
-            .then(people => {
-                
-                people.forEach(person => {
-                    if (person.coords) {
-                        const coordString = person.coords;
-                        const match = coordString.match(/Point\(([^ ]+) ([^ ]+)\)/);
-                        
-                        if (match) {
-                            const lon = parseFloat(match[1]);
-                            const lat = parseFloat(match[2]);
+    console.log("Starting to fetch data...");
 
-                            const occupationText = person.occupations.length > 0 ? person.occupations.join(', ') : "Unknown";
-                            const wikiLink = person.article ? `<a href="${person.article}" target="_blank">Read on Wikipedia</a>` : "No Wikipedia article";
+    // Point to the new high-quality file
+    fetch('data/people_with_wiki.json')
+        .then(response => response.json())
+        .then(people => {
+            console.log("High-quality data loaded:", people.length);
+            
+            people.forEach((person) => {
+                if (person.coords) {
+                    const match = person.coords.match(/Point\(([^ ]+) ([^ ]+)\)/);
+                    if (match) {
+                        const lon = parseFloat(match[1]);
+                        const lat = parseFloat(match[2]);
 
-                            const popupContent = `
-                                <h3>${person.name}</h3>
-                                <b>Born:</b> ${person.birthplace}<br>
-                                <b>Occupation:</b> ${occupationText}<br>
-                                <br>
-                                ${wikiLink}
-                            `;
+                        const occupations = person.occupations || [];
+                        const occupationText = occupations.length > 0 ? occupations.join(', ') : "Information not available";
 
-                            // NEW: Create the marker, but DON'T add it to the map directly. 
-                            // Add it to our 'markers' cluster group instead.
-                            const singleMarker = L.marker([lat, lon]).bindPopup(popupContent);
-                            markers.addLayer(singleMarker);
-                        }
+                        // Build links (Now we know at least one will exist)
+                        let wikiLinksHTML = "";
+                        if (person.enWiki) wikiLinksHTML += `<a href="${person.enWiki}" target="_blank" style="margin-right:10px;">🇬🇧 English</a>`;
+                        if (person.ukWiki) wikiLinksHTML += `<a href="${person.ukWiki}" target="_blank" style="margin-right:10px;">🇺🇦 Ukrainian</a>`;
+                        if (person.ruWiki) wikiLinksHTML += `<a href="${person.ruWiki}" target="_blank">🇷🇺 Russian</a>`;
+
+                        const popupContent = `
+                            <div style="font-family: sans-serif; min-width: 220px;">
+                                <h3 style="margin: 0 0 5px 0; color: #2c3e50;">${person.name}</h3>
+                                <p style="margin: 5px 0;"><b>Birthplace:</b> ${person.birthplace}</p>
+                                <p style="margin: 5px 0;"><b>Occupation:</b> <span style="color: #7f8c8d;">${occupationText}</span></p>
+                                <hr style="border: 0; border-top: 1px solid #eee;">
+                                <div style="margin-top: 10px;">
+                                    <b>Read biography:</b><br>
+                                    <div style="margin-top: 5px;">${wikiLinksHTML}</div>
+                                </div>
+                            </div>
+                        `;
+
+                        const singleMarker = L.marker([lat, lon]).bindPopup(popupContent);
+                        markers.addLayer(singleMarker);
                     }
-                });
-
-                // NEW: Finally, add the entire cluster group to the map all at once
-                map.addLayer(markers);
-            })
-            .catch(error => console.error("Error loading data:", error));
-    </script>
+                }
+            });
+            
+            map.addLayer(markers);
+            if (markers.getLayers().length > 0) {
+                map.fitBounds(markers.getBounds());
+            }
+        });
+</script>
 
 </body>
 </html>

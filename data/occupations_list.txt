@@ -1,0 +1,2444 @@
+OCCUPATIONS IN UKRAINE DATASET (Sorted by frequency)
+=======================================================
+politician: 7098
+military personnel: 6331
+writer: 5681
+association football player: 5023
+painter: 4175
+university teacher: 3631
+journalist: 3623
+poet: 3041
+actor: 2969
+scientist: 2514
+historian: 2232
+military officer: 1849
+translator: 1699
+statesperson: 1633
+physician: 1504
+association football coach: 1501
+teacher: 1494
+composer: 1483
+singer: 1208
+architect: 1208
+pedagogue: 1042
+economist: 971
+musician: 969
+jurist: 943
+screenwriter: 908
+diplomat: 900
+opinion journalist: 870
+sculptor: 830
+engineer: 825
+film director: 779
+physicist: 771
+mathematician: 744
+lawyer: 687
+public figure: 654
+linguist: 644
+literary scholar: 637
+chemist: 609
+conductor: 576
+pianist: 572
+music educator: 572
+athlete: 548
+film actor: 530
+opera singer: 526
+social activist: 505
+art historian: 496
+graphic artist: 492
+entrepreneur: 489
+literary critic: 486
+photographer: 462
+prose writer: 460
+stage actor: 456
+philosopher: 452
+director: 447
+playwright: 443
+editing staff: 429
+television presenter: 421
+athletics competitor: 416
+theatrical director: 415
+chess player: 414
+Eastern Orthodox priest: 414
+philologist: 396
+businessperson: 378
+Catholic priest: 364
+soldier: 360
+military leader: 358
+priest: 353
+archaeologist: 341
+biologist: 337
+rabbi: 321
+musicologist: 313
+local historian: 297
+artist: 294
+civil servant: 293
+aircraft pilot: 290
+publisher: 286
+coach: 282
+volleyball player: 281
+futsal player: 281
+ice hockey player: 280
+inventor: 275
+geologist: 271
+botanist: 260
+lecturer: 257
+judge: 257
+surgeon: 248
+bandurist: 246
+film producer: 243
+basketball player: 238
+researcher: 222
+political scientist: 218
+geographer: 216
+illustrator: 215
+man of letters: 215
+folklorist: 214
+psychologist: 213
+Catholic bishop: 212
+librarian: 211
+boxer: 208
+revolutionary: 208
+violinist: 207
+professor: 201
+zoologist: 199
+ethnographer: 194
+swimmer: 190
+agronomist: 190
+camera operator: 189
+sport cyclist: 178
+editor: 178
+visual artist: 172
+literary historian: 172
+children's writer: 171
+model: 168
+presenter: 164
+figure skater: 163
+handball player: 156
+association football referee: 156
+theologian: 153
+metallurgist: 153
+bibliographer: 152
+banker: 149
+ballet dancer: 148
+amateur wrestler: 145
+activist: 145
+mechanical engineer: 144
+rower: 143
+cinematographer: 139
+dancer: 138
+secondary school teacher: 138
+tractor driver: 136
+astronomer: 134
+manufacturer: 134
+choreographer: 133
+sociologist: 132
+kobzar: 131
+entomologist: 130
+manager: 130
+educator: 128
+songwriter: 128
+archivist: 125
+designer: 124
+scenographer: 124
+blogger: 123
+computer scientist: 118
+author: 118
+Christian minister: 117
+tennis player: 116
+kolkhoznik: 116
+human rights defender: 112
+record producer: 112
+essayist: 112
+warrior: 112
+slavist: 111
+folk musician: 109
+psychiatrist: 107
+radio personality: 107
+printmaker: 107
+ceramicist: 107
+miner: 107
+lyricist: 106
+mining engineer: 106
+canoeist: 105
+science fiction writer: 105
+novelist: 105
+school teacher: 103
+wood carver: 102
+television actor: 101
+drama teacher: 101
+biochemist: 99
+choir director: 98
+singer-songwriter: 96
+ice dancer: 96
+museologist: 95
+volunteer: 94
+patron of the arts: 93
+biathlete: 92
+academic: 91
+dramaturge: 90
+short story writer: 88
+docent: 88
+artistic gymnast: 87
+Catholic deacon: 87
+civil engineer: 83
+television producer: 82
+art critic: 82
+guitarist: 80
+peasant: 80
+community leader: 80
+anthropologist: 79
+trade unionist: 79
+veterinarian: 79
+farmer: 79
+microbiologist: 78
+ecologist: 76
+fencer: 76
+merchant: 76
+theatre critic: 75
+museum professional: 74
+draftsperson: 73
+weightlifter: 72
+comedian: 72
+editor-in-chief: 71
+medievalist: 70
+restorer: 69
+non-fiction writer: 69
+orientalist: 69
+Greek-Catholic priest: 69
+cultural studies scholar: 69
+spy: 68
+memoirist: 68
+classical philologist: 68
+partisan: 68
+ethnologist: 68
+presbyter: 67
+statistician: 67
+filmmaker: 65
+theatrologist: 65
+critic: 65
+lexicographer: 65
+embroiderer: 64
+milkmaid: 64
+humorist: 63
+judoka: 63
+rhythmic gymnast: 62
+animator: 62
+sailor: 62
+design engineer: 61
+pediatrician: 60
+cyberneticist: 60
+military physician: 60
+physiologist: 60
+sport shooter: 59
+electrical engineer: 59
+hazzan: 59
+ice hockey coach: 58
+pharmacist: 58
+master builder: 58
+cross-country skier: 57
+police officer: 57
+collector: 57
+gynecologist: 56
+official: 55
+film screenwriter: 55
+art collector: 54
+fighter pilot: 54
+production designer: 54
+political activist: 54
+film score composer: 53
+dissident: 52
+adult educator: 52
+graphic designer: 52
+railway worker: 52
+dentist: 51
+Esperantist: 51
+war correspondent: 51
+fashion designer: 51
+explorer: 51
+monk: 50
+biographer: 50
+traveler: 50
+paleontologist: 50
+clandestine agent: 50
+test pilot: 50
+documentary filmmaker: 50
+Chernobyl liquidator: 49
+legal scholar: 49
+music arranger: 49
+industrialist: 49
+ukrainianist: 49
+audio engineer: 48
+resistance fighter: 48
+deputy: 47
+deacon: 46
+cultural activist: 46
+badminton player: 46
+chess composer: 45
+iconographer: 45
+hieromonk: 45
+YouTuber: 44
+ballet master: 43
+caricaturist: 43
+showman: 43
+film scholar: 43
+music critic: 42
+prosecutor: 42
+cellist: 41
+geophysicist: 41
+theoretical physicist: 41
+competitive diver: 41
+pornographic actor: 41
+geneticist: 40
+sprinter: 39
+satirist: 39
+film editor: 39
+rapper: 39
+nurse: 38
+cartographer: 38
+curator: 38
+sports executive: 38
+mineralogist: 38
+theatre manager: 38
+art educator: 38
+disc jockey: 37
+biophysicist: 37
+neurologist: 37
+vlogger: 37
+KVN actor: 37
+Q137342812: 37
+weaver: 37
+surveyor: 37
+gymnast: 36
+archer: 36
+referee: 36
+producer: 36
+military flight engineer: 36
+film critic: 35
+television journalist: 35
+harvester: 35
+library scientist: 35
+immunologist: 34
+costume designer: 34
+art photographer: 34
+political prisoner: 34
+aristocrat: 34
+head teacher: 34
+pharmacologist: 33
+meteorologist: 33
+philanthropist: 33
+missionary: 33
+church historian: 33
+preacher: 33
+urban planner: 32
+ophthalmologist: 32
+literary theorist: 32
+figure skating coach: 32
+mind gamer: 32
+boxing trainer: 32
+land owner: 32
+naturalist: 32
+religious studies scholar: 32
+military historian: 32
+archbishop: 31
+newspaper editor: 31
+voice actor: 31
+programmer: 31
+Eastern Orthodox bishop: 31
+epidemiologist: 31
+mountaineer: 31
+potter: 31
+beach soccer player: 31
+mechanic: 30
+circus performer: 30
+chinovnik: 30
+intelligence officer: 30
+Russian studies scholar: 30
+television director: 30
+ornithologist: 30
+financier: 30
+ski jumper: 30
+jazz musician: 29
+concertmaster: 29
+botanical collector: 29
+music teacher: 29
+cardiologist: 29
+basketball coach: 28
+psychoanalyst: 28
+bibliophile: 28
+naval officer: 28
+hegumen: 28
+accountant: 28
+beauty pageant contestant: 27
+pathologist: 27
+chief executive officer: 27
+librettist: 27
+materials scientist: 27
+water polo player: 27
+dean: 27
+photojournalist: 27
+construction worker: 27
+airman: 27
+table tennis player: 26
+nuclear physicist: 26
+zionist: 26
+racing automobile driver: 26
+astronaut: 26
+therapist: 26
+locksmith: 26
+scientific collector: 26
+heraldist: 26
+organizer of film production: 26
+recording artist: 26
+legal historian: 25
+advocate: 25
+pysankar: 25
+poster artist: 25
+kickboxer: 25
+dub actor: 25
+art theorist: 25
+infectious disease physician: 25
+nun: 25
+housewife: 25
+officer of the Milicja Obywatelska: 25
+printer: 25
+lirnyk: 25
+Judaic scholar: 24
+forester: 24
+city head: 24
+professional gamer: 24
+draughts player: 24
+virologist: 24
+animal breeder: 24
+luger: 24
+polonist: 24
+volleyball coach: 23
+head of department: 23
+beach volleyball player: 23
+laborer: 23
+chemical engineer: 23
+exhibition curator: 23
+publicist: 23
+watercolorist: 23
+urologist: 23
+bayanist: 23
+radiologist: 22
+hygienist: 22
+germanist: 22
+parson: 22
+Islamic resistance: 22
+sports journalist: 22
+religious figure: 22
+military commander: 22
+romanist: 22
+ichthyologist: 22
+pastor: 21
+translator of Adam Mickiewicz: 21
+bandura maker: 21
+bibliologist: 21
+Hebraist: 21
+chaplain: 21
+bookseller: 21
+cleric: 21
+cartoonist: 21
+clarinetist: 21
+erotic photography model: 21
+speedway rider: 21
+rebel: 20
+synchronized swimmer: 20
+aerospace engineer: 20
+technician: 20
+internist: 20
+ballerina: 20
+zootechnician: 20
+impressionist: 20
+French resistance fighter: 20
+criminalist: 20
+carpenter: 20
+tailor: 20
+obstetrician: 20
+freestyle skier: 20
+alpine skier: 19
+student: 19
+flying ace: 19
+ballet teacher: 19
+announcer: 19
+astrophysicist: 19
+research fellow: 19
+oncologist: 19
+literary editor: 19
+monarch: 19
+large estate owner: 19
+fashion model: 19
+sambo fighter: 19
+long-distance runner: 19
+rug maker: 19
+kayaker: 18
+local politician: 18
+science communicator: 18
+autobiographer: 18
+karateka: 18
+anatomist: 18
+parasitologist: 18
+literary translator: 18
+chorus master: 18
+minister: 18
+notary: 17
+violist: 17
+serial killer: 17
+trumpeter: 17
+music video director: 17
+firefighter: 17
+Turkologist: 17
+dialectologist: 17
+correspondence chess player: 17
+Wikipedian: 17
+military engineer: 17
+mycologist: 17
+clown: 16
+columnist: 16
+Eastern Orthodox monk: 16
+puppeteer: 16
+stand-up comedian: 16
+mixed martial arts fighter: 16
+thermophysicist: 16
+performance artist: 16
+numismatist: 16
+restaurateur: 16
+bacteriologist: 16
+performing artist: 16
+endocrinologist: 16
+Wikimedian: 16
+histologist: 16
+triathlete: 16
+glass artist: 16
+lithographer: 16
+machinist: 16
+economic agent: 16
+party organizer: 16
+medalist: 16
+agricultural worker: 16
+otolaryngologist: 15
+medical researcher: 15
+classical pianist: 15
+powerlifter: 15
+exlibrist: 15
+figure skating choreographer: 15
+cook: 15
+Aliyah Bet activist: 15
+sound operator: 15
+Rebbe: 15
+organist: 15
+accordionist: 15
+women's rights activist: 15
+voice teacher: 15
+impresario: 15
+sports official: 15
+muralist: 15
+hammer thrower: 15
+education activist: 15
+brigadir: 15
+criminal: 14
+worker: 14
+technologist: 14
+anarchist: 14
+sinologist: 14
+Orthodox theologian: 14
+modern pentathlete: 14
+demographer: 14
+track cyclist: 14
+vocalist: 14
+middle-distance runner: 14
+winegrower: 14
+dermatologist: 14
+investor: 14
+Indologist: 14
+hydrologist: 14
+benefactor: 14
+clerk: 14
+marathon runner: 14
+speed skater: 14
+historian of science: 14
+trampoline gymnast: 14
+tankman: 14
+veteran: 14
+military chaplain: 14
+military aviator: 14
+strongman: 13
+social worker: 13
+rock climber: 13
+military volunteer: 13
+gallerist: 13
+physical chemist: 13
+hydrobiologist: 13
+campaign manager: 13
+conferencier: 13
+reporter: 13
+cell biologist: 13
+geobotanist: 13
+diarist: 13
+handball coach: 13
+Reformed pastor: 13
+beekeeper: 13
+electrician: 13
+textbook writer: 13
+rugby union player: 13
+phthisiatrist: 13
+combat medic: 13
+textile artist: 13
+Catholic theologian: 13
+Nordic combined skier: 13
+excavator operator: 13
+bodybuilder: 12
+sportsperson: 12
+artistic director: 12
+opera director: 12
+terrorist: 12
+submariner: 12
+cultural historian: 12
+drummer: 12
+train driver: 12
+chairperson: 12
+genealogist: 12
+agricultural engineer: 12
+artisan: 12
+engineering technologist: 12
+high jumper: 12
+secretary: 12
+assistant physician: 12
+executive: 12
+sovereign: 12
+bobsledder: 12
+law professor: 12
+tour guide: 12
+blacksmith: 12
+obstetrician-gynecologist: 12
+interior designer: 11
+javelin thrower: 11
+Bible translator: 11
+principal director: 11
+bandleader: 11
+ethnomusicologist: 11
+japanologist: 11
+mayor: 11
+long jumper: 11
+cardiac surgeon: 11
+regional writer: 11
+psychotherapist: 11
+dressmaker: 11
+saxophonist: 11
+rally driver: 11
+scholar: 11
+tapestry weaver: 11
+sniper: 11
+equestrian: 11
+schoolchild: 11
+theatre maker: 11
+rowing coach: 11
+source critic: 11
+vicar: 11
+prorector: 11
+hematologist: 11
+army scout: 10
+soil scientist: 10
+adviser: 10
+landscape painter: 10
+Thai boxer: 10
+business executive: 10
+aesthetician: 10
+dendrologist: 10
+physician writer: 10
+governor: 10
+musical instrument maker: 10
+animation director: 10
+paleobotanist: 10
+shipbuilder: 10
+neurosurgeon: 10
+typographer: 10
+media manager: 10
+installation artist: 10
+pensioner: 10
+orthopedist: 10
+arabist: 10
+engraver: 10
+dance teacher: 10
+goldsmith: 10
+paramedic: 10
+theatre designer: 10
+primary school teacher: 10
+encyclopedist: 10
+border guardsman: 10
+conservator: 10
+metropolitan: 10
+pig farmer: 10
+political commissar: 10
+philatelist: 9
+video artist: 9
+classical composer: 9
+classical scholar: 9
+art dealer: 9
+analyst: 9
+pundit: 9
+military scientist: 9
+radio journalist: 9
+railway engineer: 9
+landscape architect: 9
+mechanician: 9
+physiotherapist: 9
+medical administrator: 9
+environmentalist: 9
+chauffeur: 9
+ambassador: 9
+geochemist: 9
+squash player: 9
+traumatologist: 9
+cantor: 9
+palaeographer: 9
+sports commentator: 9
+biblical scholar: 9
+multi-instrumentalist: 9
+hydronaut: 9
+medic: 9
+Olympic competitor: 9
+political adviser: 9
+seismologist: 9
+bass guitarist: 9
+calligrapher: 9
+driver-sanitar: 9
+pedologist: 9
+rescuer: 9
+TikToker: 9
+regionalist: 8
+medical historian: 8
+personal stylist: 8
+war photographer: 8
+dollmaker: 8
+rock musician: 8
+keyboardist: 8
+etcher: 8
+piano teacher: 8
+online streamer: 8
+interpreter: 8
+assistant director: 8
+functionary: 8
+joiner: 8
+music historian: 8
+contemporary artist: 8
+wartime collaborator: 8
+collector of fairy tales: 8
+criminologist: 8
+track and field coach: 8
+film theorist: 8
+acrobat: 8
+chronicler: 8
+winemaker: 8
+cobbler: 8
+phycologist: 8
+metallurgical engineer: 8
+honorary consul: 8
+jeweler: 8
+flautist: 8
+lord of the manor: 8
+DJ producer: 8
+archaeograph: 8
+driver: 8
+neurophysiologist: 8
+oboist: 8
+Polish scout: 8
+klezmer musician: 8
+forestry scientist: 8
+lepidopterist: 8
+natural track luger: 8
+forestry engineer: 8
+scout: 8
+trombonist: 8
+stunt performer: 8
+carver: 8
+music director: 8
+embryologist: 8
+taekwondo athlete: 8
+decorative artist: 8
+correspondent: 8
+steel fixer: 8
+portraitist: 7
+hydraulic engineer: 7
+jewelry designer: 7
+mime artist: 7
+concert singer: 7
+speleologist: 7
+pole vaulter: 7
+hurdler: 7
+music theorist: 7
+comics artist: 7
+lady-in-waiting: 7
+triple jumper: 7
+news presenter: 7
+Internet celebrity: 7
+intelligence agent: 7
+military theorist: 7
+gardener: 7
+paratrooper: 7
+propagandist: 7
+expert: 7
+security guard: 7
+language teacher: 7
+bishop: 7
+neuroscientist: 7
+social scientist: 7
+Playboy Playmate: 7
+bassoonist: 7
+hydrographer: 7
+master mariner: 7
+navigator: 7
+association football executive: 7
+herpetologist: 7
+documentarian: 7
+molecular biologist: 7
+prehistorian: 7
+religious writer: 7
+fairy tales writer: 7
+lichenologist: 7
+LGBTQ rights activist: 7
+orthopedic surgeon: 7
+logician: 7
+archimandrite: 7
+scholar of English: 7
+electrotechnician: 7
+short-track speed skater: 7
+canon: 7
+postage stamp designer: 7
+radiophysicist: 7
+урядник: 7
+colonel: 6
+consultant: 6
+jazz guitarist: 6
+salesperson: 6
+Czechoslovak legionary: 6
+neuropathologist: 6
+conceptual artist: 6
+baseball player: 6
+operetta singer: 6
+racing driver: 6
+Christian nun: 6
+hispanist: 6
+ship captain: 6
+Byzantinist: 6
+historian of mathematics: 6
+art director: 6
+cabaret performer: 6
+factory owner: 6
+mammalogist: 6
+religious leader: 6
+horn player: 6
+auto mechanic: 6
+philosophy historian: 6
+career soldier: 6
+flight attendant: 6
+bohemicist: 6
+seamstress: 6
+theatrical producer: 6
+magician: 6
+pulmonologist: 6
+salonnière: 6
+business manager: 6
+talmudist: 6
+suffragist: 6
+chess coach: 6
+hagiographer: 6
+mathematics teacher: 6
+radio editor: 6
+instrumentalist: 6
+stomatologist: 6
+badminton coach: 6
+egyptologist: 6
+double-bassist: 6
+mystic: 6
+chamberlain: 6
+anesthesiologist: 6
+grammarian: 6
+architectural historian: 6
+expert pharmacist: 6
+religious: 6
+administrator: 6
+rosh yeshiva: 6
+film historian: 6
+geodesist: 6
+shot putter: 6
+petroleum engineer: 6
+shepherd: 6
+polar explorer: 6
+school inspector: 6
+welder: 6
+astrologer: 5
+poker player: 5
+topologist: 5
+entertainer: 5
+influencer: 5
+glider pilot: 5
+regional historian: 5
+skier: 5
+impostor: 5
+iranologist: 5
+economic historian: 5
+futsal coach: 5
+collagist: 5
+hairdresser: 5
+robber: 5
+music publicist: 5
+music professor: 5
+poet lawyer: 5
+shopkeeper: 5
+decorator: 5
+Africanist: 5
+bookkeeper: 5
+balneotherapist: 5
+nephrologist: 5
+climber: 5
+Zionist activist: 5
+orator: 5
+electronic engineer: 5
+political economist: 5
+topographer: 5
+censor: 5
+racewalker: 5
+geomorphologist: 5
+badchen: 5
+motorcycle racer: 5
+library science: 5
+estate owner: 5
+history teacher: 5
+coupletist: 5
+cryptographer: 5
+pomologist: 5
+historian of classical antiquity: 5
+catechist: 5
+methodologist: 5
+glassblower: 5
+music executive: 5
+chapelmaster: 5
+podcaster: 5
+turner: 5
+crystallographer: 5
+chemical technologist: 5
+transportation engineer: 5
+rikishi: 5
+football agent: 5
+sapper: 5
+member of the Supreme Soviet of the Ukrainian Soviet Socialist Republic: 5
+founder: 5
+classical guitarist: 5
+gastroenterologist: 5
+toxicologist: 5
+general contractor: 5
+portrait painter: 5
+wood turner: 5
+catholic eparch: 5
+murderer: 5
+field hockey player: 5
+People's Deputy of Ukraine: 5
+religious education teacher: 5
+crane driver: 5
+deputy of the Supreme Soviet of the Soviet Union: 5
+chief physician: 5
+acrobatic gymnast: 5
+milking machine operator: 5
+legionary: 4
+private bank: 4
+dressage rider: 4
+American football player: 4
+jazz singer: 4
+hatter: 4
+animal trainer: 4
+narrator: 4
+optician: 4
+reciter: 4
+theatre historian: 4
+technical specialist: 4
+make-up artist: 4
+silent film actor: 4
+petrographer: 4
+ultramarathon runner: 4
+conservationist: 4
+helicopter pilot: 4
+percussionist: 4
+harpist: 4
+mosaicist: 4
+harpsichordist: 4
+communist: 4
+theorist: 4
+radio employee: 4
+goalkeeper coach: 4
+stenographer: 4
+industrial designer: 4
+stage painter: 4
+sports pedagogue: 4
+German–Ukrainian translator: 4
+documentalist: 4
+plant breeder: 4
+art model: 4
+typesetter: 4
+aircraft designer: 4
+canon law jurist: 4
+sporting director: 4
+concentration camp guard: 4
+confessor: 4
+steeplechase runner: 4
+feminist: 4
+historian of Modern Age: 4
+investigative journalist: 4
+videographer: 4
+feldsher: 4
+admiral: 4
+pentathlete: 4
+type designer: 4
+lutenist: 4
+innovator: 4
+evolutionary biologist: 4
+snowboarder: 4
+applied mathematician: 4
+animal rights advocate: 4
+geopolitical analyst: 4
+helminthologist: 4
+nationalist activist: 4
+coal miner: 4
+Protestant theologian: 4
+pop singer: 4
+general director: 4
+para athletics competitor: 4
+church writer: 4
+culture personality: 4
+balalaikist: 4
+hydrogeologist: 4
+balneologist: 4
+orienteer: 4
+talent agent: 4
+metrologist: 4
+beamter: 4
+luthier: 4
+climatologist: 4
+bodyguard: 4
+Général: 4
+broadcaster: 4
+forestry worker: 4
+anti-fascist: 4
+пластун: 4
+Cossacks: 4
+military expert: 4
+preservationist: 4
+cataloger: 4
+metadata librarian: 4
+wheelchair fencer: 4
+swimming coach: 4
+director general: 4
+health professional: 4
+motocross rider: 4
+general practitioner: 4
+military conductor: 4
+homeopath: 4
+cultural manager: 4
+dub director: 4
+повітовий комісар ЗУНР: 4
+cultural anthropologist: 4
+motoball player: 4
+media proprietor: 4
+adventurer: 4
+illuminator: 4
+podologist: 4
+physical education teacher: 4
+truck driver: 4
+jurist-consultant: 4
+service worker: 4
+bandy player: 4
+mine entrepreneur: 4
+chekist: 4
+onomastician: 4
+Paralympic athlete: 4
+energy engineer: 4
+Колгоспник: 4
+works manager: 4
+fabulist: 4
+traditional folk singer: 4
+herbalist: 4
+anesthetist: 3
+arachnologist: 3
+pastry chef: 3
+miniature painter: 3
+anatomical pathologist: 3
+Q137178806: 3
+skydiver: 3
+baker: 3
+community organizer: 3
+modiste: 3
+soloist: 3
+cultural worker: 3
+gamer: 3
+latinist: 3
+cosplayer: 3
+cue sports player: 3
+secret service officer: 3
+major general: 3
+sports physician: 3
+bretteur: 3
+child actor: 3
+fiddler: 3
+mail carrier: 3
+gunsmith: 3
+literary agent: 3
+discus thrower: 3
+charity worker: 3
+professional boxer: 3
+television personality: 3
+electronic musician: 3
+stevedore: 3
+public administration: 3
+гласний: 3
+organ builder: 3
+astronautical engineer: 3
+film or television director: 3
+Instagram blogger: 3
+military analyst: 3
+magazine editor: 3
+radio technician: 3
+textile worker: 3
+intensivist: 3
+plastic surgeon: 3
+refugee: 3
+labor leader: 3
+drawing teacher: 3
+Russian teacher: 3
+motorcyclist: 3
+public relations executive: 3
+food scientist: 3
+Latin Catholic priest: 3
+kindergarten teacher: 3
+decathlete: 3
+chef: 3
+party activist: 3
+Americanist: 3
+prelate: 3
+donor: 3
+inbetweener: 3
+professional wrestler: 3
+queen regnant: 3
+suffragette: 3
+history: 3
+kosher slaughterer: 3
+chansonnier: 3
+media scholar: 3
+oral and maxillofacial surgeon: 3
+church choirmaster: 3
+portrait photographer: 3
+melamed: 3
+Ukrainian–German translator: 3
+social historian: 3
+regular cleric: 3
+hierodeacon: 3
+kabbalist: 3
+estrada artist: 3
+necropolis scholar: 3
+yoga instructor: 3
+theology teacher: 3
+para swimmer: 3
+colonial administrator: 3
+real estate developer: 3
+spokesperson: 3
+merchantry: 3
+business: 3
+cynologist: 3
+university student: 3
+gymnastics coach: 3
+zoological collector: 3
+Prisyazhny Poverenny: 3
+legal counselor: 3
+torbanist: 3
+local government official: 3
+hotel manager: 3
+webcam model: 3
+para canoeist: 3
+semiotician: 3
+orthodontist: 3
+child psychiatrist: 3
+biotechnologist: 3
+pool player: 3
+Catholic military chaplain: 3
+model maker: 3
+répétiteur: 3
+book printer: 3
+apostolic administrator: 3
+regular priest: 3
+basketball official: 3
+musicographer: 3
+reality television participant: 3
+кулінарний експерт: 3
+forensic scientist: 3
+video game developer: 3
+OnlyFans model: 3
+construction: 3
+chairman of the executive board: 3
+windsurfer: 3
+butcher: 3
+pathophysiologist: 3
+plastic artist: 3
+children's book illustrator: 3
+coxswain: 3
+snooker player: 3
+union organizer: 3
+scribe: 3
+emergency medical technician: 3
+radio operator: 3
+bank manager: 3
+event producer: 3
+book collector: 3
+feuilletonist: 3
+hofmeister: 3
+air force officer: 3
+ombudsman: 3
+sociolinguist: 3
+accompanist: 3
+jongleur: 3
+senior teacher: 3
+coleopterist: 3
+test cosmonaut: 3
+thief in law: 3
+foreign minister: 3
+professeur des universités: 3
+software developer: 3
+mufti: 3
+tattoo artist: 3
+horticulturist: 3
+criminal authority: 3
+combatant: 3
+mass murderer: 3
+millwright: 3
+dollmaking: 3
+embroidery: 3
+stained-glass artist: 3
+choir singer: 3
+council member: 3
+patent inventor: 3
+organic chemist: 3
+pseudoscientist: 3
+political writer: 3
+ruler: 3
+polyglot: 3
+machine gunner: 3
+belarussist: 3
+liturgist: 3
+management: 3
+prisoner of conscience: 3
+criminal investigator: 3
+martinist: 2
+льонар: 2
+historian of Eastern Europe: 2
+insurance broker: 2
+indigenist: 2
+beauty pageant winner: 2
+intendant: 2
+multimedia artist: 2
+Termen-Yelga: 2
+classical musician: 2
+whistleblower: 2
+architectural theoretician: 2
+aphorist: 2
+polymer chemist: 2
+French horn player: 2
+water polo coach: 2
+Jewish communities scholar: 2
+esports coach: 2
+character actor: 2
+gangster: 2
+music publisher: 2
+radiobiologist: 2
+bartender: 2
+Kick streamer: 2
+lexicologist: 2
+nude model: 2
+fencing coach: 2
+competition climber: 2
+public speaking coach: 2
+hetman: 2
+director of radio drama: 2
+chief technology officer: 2
+comparative literature academic: 2
+flight engineer: 2
+sport historian: 2
+graffiti artist: 2
+women composers: 2
+Posek: 2
+cosmologist: 2
+professional driver: 2
+badminton executive and administrator: 2
+bryologist: 2
+porcelain painter: 2
+Q106783413: 2
+royalty: 2
+Jewish theologian: 2
+Islamicist: 2
+amateur photographer: 2
+bookbinder: 2
+carpets designer: 2
+assistant technical specialist: 2
+furrier: 2
+political reporter: 2
+mayanist: 2
+diving coach: 2
+factory worker: 2
+intellectual: 2
+feature writer: 2
+communications manager: 2
+anarcho-syndicalist: 2
+diamond cutter: 2
+metalsmith: 2
+table hockey player: 2
+board member: 2
+electrochemist: 2
+geriatrician: 2
+dermatovenereologist: 2
+artillerist: 2
+classical violinist: 2
+railway executive: 2
+papercut artist: 2
+jazz violinist: 2
+architectural draftsperson: 2
+jurisprudence: 2
+subdeacon: 2
+futurist: 2
+editorial cartoonist: 2
+sugar refiner: 2
+starosta: 2
+sex educator: 2
+clinical psychologist: 2
+ceramic painter: 2
+assistant professor: 2
+machine fitter: 2
+furniture designer: 2
+general manager: 2
+television writer: 2
+person with disabilities: 2
+business oligarch: 2
+assyriologist: 2
+finance minister: 2
+sports agent: 2
+Doctor of Sciences in Veterinary: 2
+ceramics designer: 2
+executive producer: 2
+ministry official: 2
+Privatdozent: 2
+transitional deacon: 2
+thoracic surgeon: 2
+public health physician: 2
+thief: 2
+judge of the Constitutional Court of Ukraine: 2
+martial artist: 2
+chemistry teacher: 2
+party leader: 2
+textologist: 2
+weightlifting coach: 2
+radio playwright: 2
+rock singer: 2
+anthroposophist: 2
+amateur astronomer: 2
+club DJ: 2
+creative director: 2
+narcologist: 2
+new media artist: 2
+Doctor: 2
+historic preservationist: 2
+Clerical Officer: 2
+schoolmaster: 2
+solicitor: 2
+postmaster: 2
+friar: 2
+film journalist: 2
+rugby sevens player: 2
+castellan: 2
+historiographer: 2
+lobbyist: 2
+xylographer: 2
+medical specialist: 2
+Scandinavian studies scholar: 2
+anti-vaccine activist: 2
+unit production manager: 2
+political pundit: 2
+humanitarian: 2
+music artist: 2
+foreign correspondent: 2
+industrial engineer: 2
+Lutheran pastor: 2
+fisher: 2
+contortionist: 2
+real estate entrepreneur: 2
+science writer: 2
+principal engineer: 2
+ethicist: 2
+production manager: 2
+Go player: 2
+guild: 2
+experimental physicist: 2
+millionaire: 2
+Landrat: 2
+genre painter: 2
+captain: 2
+actuary: 2
+монтажник металоконструкцій: 2
+Go professional: 2
+Hebrew teacher: 2
+ethnic studies scholar: 2
+socio-cultural animator: 2
+rheumatologist: 2
+hedge fund manager: 2
+прохідник: 2
+vocal composer: 2
+talent manager: 2
+aikidoka: 2
+reservist: 2
+venereologist: 2
+Лікар-кардіолог: 2
+digital creator: 2
+bioengineer: 2
+nurse scientist: 2
+bell founder: 2
+consul general: 2
+culinary writer: 2
+academic administrator: 2
+Plastun: 2
+life scientist: 2
+speechwriter: 2
+marine biologist: 2
+supervisor: 2
+painter and varnisher: 2
+detective: 2
+fitness trainer: 2
+victim: 2
+petrologist: 2
+postcard publisher: 2
+mercenary: 2
+physical geographer: 2
+socialite: 2
+project manager: 2
+traceur: 2
+bricklayer: 2
+laboratory technician: 2
+blood donor: 2
+cyclist: 2
+marketologue: 2
+antiquarian: 2
+Crown rabbi: 2
+unlicensed assistive personnel: 2
+Heilpraktiker: 2
+mayor of a place in Russia: 2
+war artist: 2
+adjudicator: 2
+corruption: 2
+ballet critic: 2
+con artist: 2
+senior research fellow: 2
+opera vocal coach: 2
+tennis coach: 2
+engine driver: 2
+employee: 2
+court musician: 2
+midwife: 2
+educational theorist: 2
+militant: 2
+philosopher of law: 2
+military advisor: 2
+social pedagogue: 2
+young adult author: 2
+breakdancer: 2
+diabetologist: 2
+video jockey: 2
+agricultural chemist: 2
+section chief: 2
+medical laboratory scientist: 2
+waiter: 2
+judo coach: 2
+protoiereus: 2
+Holocaust survivor: 2
+event rider: 2
+father of faith: 2
+municipal government: 2
+occultist: 2
+hellenist: 2
+arm wrestler: 2
+sovietologist: 2
+bassist: 2
+journal editor: 2
+dairy farmer: 2
+head of laboratory: 2
+string player: 2
+Chief Rabbi: 2
+kickboxing trainer: 2
+dispatcher: 2
+central bank governor: 2
+chess organiser: 2
+street artist: 2
+speech and language therapist: 2
+diver: 2
+contemporary folk singer: 2
+parapsychologist: 2
+life coach: 2
+Marshal of Nobility: 2
+English teacher: 2
+ataman: 2
+governance: 2
+legislator: 2
+travel guide: 2
+calendar scientist: 2
+underground movement: 2
+Young Guard: 2
+Q19862215: 2
+limnologist: 2
+equilibristics: 2
+селищний голова: 2
+herder: 2
+scientific editor: 2
+trust: 2
+horse breeder: 2
+road cyclist: 2
+beet grower: 2
+economic geographer: 2
+basket weaver: 2
+grinder: 2
+economic activity: 2
+Ukrainian literature: 2
+economics: 2
+serial rapist: 2
+dyak: 2
+reformer: 2
+head coach: 1
+ghostwriter: 1
+taxonomist: 1
+spree killer: 1
+data scientist: 1
+Doctor of Sciences in Medicine: 1
+violin teacher: 1
+company dancer: 1
+deputy chairperson: 1
+Archiereus: 1
+vigneron: 1
+mountain guide: 1
+assassin: 1
+video installation artist: 1
+chief financial officer: 1
+procurer: 1
+music journalist: 1
+decorator pattern: 1
+upholsterer: 1
+figure skating judge: 1
+Magic: The Gathering player: 1
+livestock and dairy producers: 1
+script editor: 1
+shaliach: 1
+rugby league player: 1
+music editor: 1
+arms trafficker: 1
+spymaster: 1
+Twitch streamer: 1
+cardiology: 1
+construction officer: 1
+car dealer: 1
+stock market speculator: 1
+set art director: 1
+juggler: 1
+coin collecting: 1
+co-collector: 1
+fortune teller: 1
+phrenologist: 1
+The Reader: 1
+ice climber: 1
+MC: 1
+acting instructor: 1
+knyaz: 1
+knight: 1
+military rabbi: 1
+opera composer: 1
+clinical biologist: 1
+classical flautist: 1
+kinesiotherapist: 1
+baseball coach: 1
+echinologist: 1
+Bulgarist: 1
+freestyle wrestling: 1
+Marine officer: 1
+advertising: 1
+personal physician: 1
+bandurystka: 1
+world traveler: 1
+molding worker: 1
+association football assistant referee: 1
+FSB agent: 1
+Marxist philosophy: 1
+beadworker: 1
+Q121232974: 1
+Gestapo employee: 1
+brigand: 1
+zemstvo: 1
+Ziegfeld girl: 1
+volapükologist: 1
+handicrafter: 1
+arms trader: 1
+medieval historian: 1
+ufologist: 1
+decorative painter: 1
+auditor: 1
+condottiero: 1
+sexologist: 1
+spongiologist: 1
+disability rights activist: 1
+abstractionist: 1
+Q97205356: 1
+chamber musician: 1
+preschool teacher: 1
+educational sociologist: 1
+Q117804838: 1
+presser: 1
+odontologist: 1
+civilian employee of the military: 1
+analytical chemist: 1
+slave trader: 1
+counterfeiter: 1
+mayor of Odesa: 1
+lead programmer: 1
+professional fitness coach: 1
+exhibition curation: 1
+television editor: 1
+Lector: 1
+information scientist: 1
+showrunner: 1
+bar pianist: 1
+computational scientist: 1
+nutritional scientist: 1
+fencing master: 1
+pin-up-artist: 1
+Jewish papercut: 1
+forwarding merchant: 1
+provost: 1
+pharmacy historian: 1
+videography: 1
+trader: 1
+cup-bearer: 1
+media consultant: 1
+facilitator: 1
+arts administrator: 1
+weather presenter: 1
+prostitute: 1
+torturer: 1
+fluid dynamicist: 1
+speculator: 1
+silovik: 1
+etymologist: 1
+queen consort: 1
+folk artist: 1
+folk dancer: 1
+tennis umpire: 1
+scout leader: 1
+internal medicine: 1
+hotel owner: 1
+energy industry: 1
+posadnik: 1
+popular science author: 1
+Gabbai: 1
+textile industrial: 1
+State management: 1
+ballet director: 1
+film exhibitor: 1
+tape drive: 1
+copywriter: 1
+billionaire: 1
+lighting designer: 1
+nightclub owner: 1
+hostage taker: 1
+princess consort: 1
+cultural agent: 1
+video game designer: 1
+laic: 1
+amputee: 1
+pediatric nurse: 1
+sports analyst: 1
+mining industry: 1
+graph theorist: 1
+web development: 1
+counsel: 1
+architectural engineer: 1
+state protection officer: 1
+Catholic archbishop: 1
+esperantologist: 1
+ensurance agent: 1
+clockmaker: 1
+companion: 1
+Q63755028: 1
+bass guitar: 1
+street sweeper: 1
+massage therapist: 1
+watchmaker: 1
+representative: 1
+Verkhovna Rada: 1
+6th Verkhovna Rada: 1
+venture business: 1
+extra: 1
+building manager: 1
+медіатор: 1
+biology teacher: 1
+poisoner: 1
+political blogger: 1
+ski mountaineer: 1
+plaintiff: 1
+baritone singer: 1
+hero: 1
+Person der Zeitgeschichte: 1
+Q29017275: 1
+mandolinist: 1
+car designer: 1
+papyrologist: 1
+plant cell biologist: 1
+architectural photographer: 1
+film dramaturgy: 1
+ballet studies: 1
+textile designer: 1
+party official: 1
+agrarian historian: 1
+volunteer firefighter: 1
+communard: 1
+classical archaeologist: 1
+operetta director: 1
+plant ecologist: 1
+patristic scholar: 1
+telegraphist: 1
+prisoner: 1
+Russian oligarch: 1
+Hispanicamericanist: 1
+osteopath: 1
+horse trainer: 1
+Holocaust perpetrator: 1
+language activist: 1
+historian of religion: 1
+Q19218869: 1
+program maker: 1
+court bandurist: 1
+plant physiologist: 1
+Q125380827: 1
+chief justice: 1
+division manager: 1
+academic musician: 1
+syntactician: 1
+oceanographer: 1
+commercial artist: 1
+naval surgeon: 1
+conspirator: 1
+science journalist: 1
+scenography: 1
+The Artist: 1
+protistologist: 1
+armenologist: 1
+banjoist: 1
+bank officer: 1
+backing vocalist: 1
+qadi: 1
+pastellist: 1
+estate agent: 1
+blast-furnace operator: 1
+Ukrainian nationalism: 1
+attaché: 1
+Q110795253: 1
+student leader: 1
+gridiron football player: 1
+Canadian football player: 1
+sigillographer: 1
+graphics: 1
+art of sculpture: 1
+Q16670609: 1
+press agent: 1
+press secretary: 1
+toasting: 1
+creator: 1
+humanities scholar: 1
+quaternary geology: 1
+court bailiff: 1
+patent attorney: 1
+coal industry: 1
+construction foreman: 1
+Member of the Supreme Soviet of the Moldavian Soviet Socialist Republic: 1
+lector: 1
+radio director: 1
+capitular vicar: 1
+oral historian: 1
+apothecary: 1
+sex worker: 1
+gerontologist: 1
+MP candidate: 1
+aviculturist: 1
+agricultural economist: 1
+sedimentologist: 1
+polymath: 1
+independence activist: 1
+dietitian: 1
+myriapodologist: 1
+dipterologist: 1
+кукурудзівник: 1
+trombone: 1
+health administrator: 1
+constitutional lawyer: 1
+методолог: 1
+paleoanthropologist: 1
+radio drama actor: 1
+agroclimatologist: 1
+gunner: 1
+mortar: 1
+dogsled musher: 1
+tourist: 1
+hospitality occupation: 1
+rat-catcher: 1
+podpolkovnik: 1
+beach handball player: 1
+principal conductor: 1
+electrophysiologist: 1
+marine architect: 1
+motivational speaker: 1
+Oberstudienrat: 1
+insurance expert: 1
+blacksmith artist: 1
+paleobiologist: 1
+website designer: 1
+session musician: 1
+carcinologist: 1
+bridge construction: 1
+translator-interpreter: 1
+skeleton racer: 1
+pancratiast: 1
+nephrology: 1
+aircraft industry: 1
+Foreign Intelligence Service: 1
+international law scholar: 1
+mixing engineer: 1
+food engineer: 1
+war criminal: 1
+courtier: 1
+antiquarian seller: 1
+swineherd: 1
+probability theorist: 1
+jury: 1
+dissenter: 1
+jester: 1
+Doctor of Economics: 1
+Schöffe: 1
+fundraiser: 1
+tanner: 1
+pipe organ: 1
+international political scientist: 1
+philosophy teacher: 1
+developmental biologist: 1
+agrostologist: 1
+Internet forum moderator: 1
+Urbanist: 1
+music promoter: 1
+artist and repertoire: 1
+guide: 1
+professional photographer: 1
+wedding photographer: 1
+YouTube presenter: 1
+sound designer: 1
+perinatologist: 1
+deputy minister: 1
+policy analyst: 1
+food blogger: 1
+angel investor: 1
+cycling coach: 1
+wrestling coach: 1
+forest expert: 1
+silversmith: 1
+court counsel: 1
+fur trader: 1
+hippie: 1
+mosaic making: 1
+informaticist: 1
+esports commentator: 1
+business analyst: 1
+orchestrator: 1
+Q1725311: 1
+music dealer: 1
+sound editor: 1
+fantasy author: 1
+pharmacoeconomist: 1
+Shevchenko studies: 1
+district governor: 1
+special education teacher: 1
+remedial teacher: 1
+merchandiser: 1
+principal dancer: 1
+volunteering: 1
+highway engineer: 1
+vaccinologist: 1
+economic geography: 1
+official in charge: 1
+German teacher: 1
+Q1627211: 1
+kinesiologist: 1
+biomechanist: 1
+Q4370165: 1
+Q52114785: 1
+reader: 1
+military nurse: 1
+information systems technician: 1
+information technology instructor: 1
+Chairman of Nadra Ukrayny: 1
+cavalry: 1
+investigator: 1
+dictionary author: 1
+association football team sports scientist: 1
+psychotherapy: 1
+teacher at a Gymnasium: 1
+pairs skater: 1
+table tennis coach: 1
+party secretary: 1
+abortion provider: 1
+Dayan: 1
+stenotypist: 1
+cover artist: 1
+vaudeville performer: 1
+psycholinguist: 1
+Muhtar: 1
+marketer: 1
+audio technician: 1
+metalworker: 1
+oppositionist: 1
+cattle rancher: 1
+investment banker: 1
+financial analyst: 1
+role-playing game designer: 1
+morphologist: 1
+military officer of healthcare: 1
+penciller: 1
+comics creator: 1
+Q124719432: 1
+president of Katowice: 1
+Q117804191: 1
+Plastun EW system: 1
+cavalry master: 1
+roller skater: 1
+intarsia cutter: 1
+Marineoffizier: 1
+proctologist: 1
+Jewish Christian: 1
+State Duma: 1
+nanny: 1
+computer engineer: 1
+political observer: 1
+discoverer of asteroids: 1
+lead guitarist: 1
+vytynanky: 1
+radio astronomer: 1
+ship-owner: 1
+spiritualist: 1
+corvette captain: 1
+homiletics: 1
+event manager: 1
+spiritual medium: 1
+Nazis hunter: 1
+tutor: 1
+member of a local council (Ukraine): 1
+counter admiral: 1
+hippologist: 1
+medical officer: 1
+Hof- und Gerichtsadvokat: 1
+timber merchant: 1
+translator of William Shakespeare: 1
+pyrotechnics: 1
+production sound mixer: 1
+Oberlehrer: 1
+business informatician: 1
+theatre entrepreneur: 1
+mediator of the peace: 1
+Q4072828: 1
+speculative fiction author: 1
+Commissioner for the Protection of the State Language: 1
+Q60647235: 1
+fashion photographer: 1
+Q1743221: 1
+oligochaetologist: 1
+panegyrist: 1
+viola d'amore player: 1
+Magnate: 1
+Sufi: 1
+para athlete: 1
+Israel Defense Forces: 1
+information and communications technology: 1
+Catholic clergyman: 1
+Bondar: 1
+wheelchair basketball player: 1
+subject teacher: 1
+Silesian rebel: 1
+mesoamericanist: 1
+inline speed skater: 1
+circus: 1
+tightrope walker: 1
+mythographer: 1
+Eastern Orthodox deacon: 1
+national team coach: 1
+skating coach: 1
+Q60224291: 1
+court architect: 1
+assembly line worker: 1
+Ethiopist: 1
+All: 1
+gem engraver: 1
+firearms designer: 1
+defectologist: 1
+nanoscientist: 1
+concept artist: 1
+media executive: 1
+militia captain: 1
+financial manager: 1
+research associate: 1
+rugby player: 1
+8th Verkhovna Rada: 1
+sole proprietorship: 1
+volleyball referee: 1
+Protopope: 1
+doping offender: 1
+football journalist: 1
+frontline cameraman: 1
+annelidologist: 1
+jujutsuka: 1
+ordinary professor: 1
+unit still photographer: 1
+counterintelligence: 1
+satin stitch: 1
+prisoner of a Nazi concentration camp: 1
+charity: 1
+harmonicist: 1
+business magnate: 1
+Arabic studies: 1
+train conductor: 1
+skipper: 1
+economy: 1
+political appointee: 1
+genre painting: 1
+chief design officer: 1
+biomedical engineer: 1
+quantum physicist: 1
+professional revolutionary: 1
+Melamed: 1
+subject librarian: 1
+chanteuse: 1
+Prosecutor General of Ukraine: 1
+pop musician: 1
+Q106311004: 1
+rugby union executive: 1
+фізіологія праці: 1
+travel writer: 1
+Новатор (Хмельницький): 1
+bullfighter: 1
+victim of Stalinism: 1
+boxing promoter: 1
+decorative art: 1
+geology: 1
+geocryology: 1
+Oligarch: 1
+snooker referee: 1
+content manager: 1
+information technology manager: 1
+jazz pianist: 1
+osteologist: 1
+metal artisan: 1
+dental technician: 1
+Amtsarzt: 1
+dialect coach: 1
+armed forces: 1
+hacker: 1
+lay judge: 1
+physical chemistry: 1
+personal trainer: 1
+celebrity: 1
+para judoka: 1
+speculative fiction writer: 1
+ice hockey official: 1
+Q16699822: 1
+Q4273137: 1
+prank caller: 1
+Volunteers of ukrainian forces in war in Donbas: 1
+nuclear engineer: 1
+rapist: 1
+patron: 1
+copper engraver: 1
+vessel captain: 1
+food industry: 1
+one-man band: 1
+possessor: 1
+field of work: 1
+employer: 1
+Schützen: 1
+entrepreneurship: 1
+interviewer: 1
+theosophist: 1
+customs officer: 1
+amateur radio operator: 1
+balloonist: 1
+scorpiologist: 1
+ballistics expert: 1
+picture editor: 1
+strategos: 1
+bowler: 1
+Q13169865: 1
+bank robber: 1
+Secondman: 1
+looter: 1
+radiochemist: 1
+peace activist: 1
+barber: 1
+citizen journalist: 1
+religion sociologist: 1
+coke chemist: 1
+location manager: 1
+inspector: 1
+advertising person: 1
+social anthropologist: 1
+Resistance Medal: 1
+holocaust denier: 1
+draughts problemist: 1
+advokat: 1
+furniture maker: 1
+pysanka: 1
+koreanologist: 1
+earth scientist: 1
+building engineer: 1
+Q81288775: 1
+podcast guest: 1
+Doktor Nauk in Psychology: 1
+collecting: 1
+taxi driver: 1
+sinology: 1
+eparch: 1
+graduate educationalist: 1
+Bunchukove comrade: 1
+mining scientist: 1
+Head of the Security Service of Ukraine: 1
+software engineer: 1
+technical writer: 1
+energy consultant: 1
+powerlifting: 1
+social philosopher: 1
+protozoologist: 1
+Military Advocate General: 1
+field hockey coach: 1
+negotiator: 1
+video game composer: 1
+metallurgy: 1
+historian of technology: 1
+stockbroker: 1
+macedonist: 1
+quality engineering: 1
+chess arbiter: 1
+chess theoretician: 1
+artivist: 1
+musical theatre actor: 1
+rebirthing: 1
+Bachelor Professional: 1
+traffic guard: 1
+retail worker: 1
+game designer: 1
+operator: 1
+bus driver: 1
+public administration scholar: 1
+Anti-Terrorist Operation in Ukraine: 1
+illusionist: 1
+professional: 1
+Q9380513: 1
+music writer: 1
+oblast council: 1
+crime fiction writer: 1
+business activity: 1
+clergyman: 1
+allergist: 1
+racketeering: 1
+trade: 1
+executive director: 1
+Scientific-Secretary: 1
+radio producer: 1
+hungarologist: 1
+experimental artist: 1
+eye surgery: 1
+appraiser: 1
+bridge player: 1
+research assistant: 1
+bandoneonist: 1
+Russification: 1
+computer security engineer: 1
+trainer: 1
+wakeboarder: 1
+guard: 1
+puppet designer: 1
+sponsor: 1
+systems analyst: 1
+glass engraver: 1
+cheesemaker: 1
+Old Catholic priest: 1
+wholesale merchant: 1
+Q97164026: 1
+oblast council deputy: 1
+particle physicist: 1
+heresiarch: 1
+farmworker: 1
+radio engineer: 1
+cashier: 1
+Latvian Shipping Company: 1
+political analyst: 1
+matenagir: 1
+acting director: 1
+Technical Manager: 1
+population geneticist: 1
+cryptanalyst: 1
+професор: 1
+stunt coordinator: 1
+bikers: 1
+slovenist: 1
+treasurer: 1
+recording supervisor: 1
+hattat: 1
+dragoman: 1
+epigrapher: 1
+Convert to Roman Catholicism: 1
+husbandry worker: 1
+Baal Shem: 1
+electronics technician: 1
+systems engineer: 1
+Av Beit Din: 1
+zookeeper: 1
+harii: 1
+Media buying: 1
+Wahhabism: 1
+valet de chambre: 1
+judge advocate: 1
+general designer: 1
+peacekeeping force: 1
+grenadier: 1
+wildlife inspector: 1
+Q58984820: 1
+set decorator: 1
+antiquarian bookseller: 1
+newspaper proprietor: 1
+armored vehicle driver: 1
+personal assistant: 1
+гранатометник: 1
+tax collector: 1
+prior: 1
+wartime collaboration: 1
+master craftsman: 1
+rhapsode: 1
+literature organizer: 1
+humanist: 1
+teacher of literature: 1
+certified public accountant: 1
+lion tamer: 1
+finswimming: 1
+senior researcher: 1
+biathlon coach: 1
+Hetman of Zaporizhian Host: 1
+scientific illustrator: 1
+social media marketing: 1
+Society of Jesus: 1
+fruit grower: 1
+caretaker: 1
+post-production: 1
+chimney sweep: 1
+king: 1
+milling machine operator: 1
+Iliad's translator: 1
+retoucher: 1
+дизайнер-верстальник: 1
+gouachist: 1
+exegete: 1
+Q13403060: 1
+art writer: 1
+pedagogical writer: 1
+soil chemist: 1
+khorunzhy: 1
+barber surgeon: 1
+municipal clerk: 1
+webmaster: 1
+Catholic monk: 1
+crime boss: 1
+radiosportsperson: 1
+hurdy gurdy player: 1
+model aircraft building: 1
+competition judge: 1
+Mayor of Kraków: 1
+xylophonist: 1
+Broder singer: 1
+acarologist: 1
+double agent: 1
+instructor: 1
+pest control worker: 1
+information professional: 1
+domra player: 1
+content creator: 1
+bandy coach: 1
+freight forwarder: 1
+Category:Rugby sevens referees: 1
+rugby sevens coach: 1
+Varvaryntsi: 1
+tzadik: 1
+wrestler: 1
+phytotherapist: 1
+potato grower: 1
+information technology: 1
+Latin Catholic monk: 1
+military writer: 1
+statutory auditor: 1
+Lady-in-waiting of the Imperial Court of Russia: 1
+encyclopédistes: 1
+chancellor: 1
+comics writer: 1
+president: 1
+commercial director: 1
+oligofrenopedagogue: 1
+executioner: 1
+Russophilia: 1
+communication scholar: 1
+saboteur: 1
+peace makers: 1
+serigrapher: 1
+municipal employee: 1
+volapükist: 1
+epidemiology: 1
+emigrant: 1
+cytogeneticist: 1
+animal scientist: 1
+university professor: 1
+Philhellenism: 1
+antiquities collector: 1
+philosophy of education: 1
+code talker: 1
+physics teacher: 1
+Поліграфіст: 1
+agroecologist: 1
+agrometeorologist: 1
+member of the Supreme Soviet of the Russian Soviet Federative Socialist Republic: 1
+anti-Ukrainian sentiment: 1
+Q56239449: 1
+Eastern Catholic priest: 1
+головний агроном: 1
+leader: 1
+mathematical physicist: 1
+amateur painter: 1
+Генеральний писар: 1
+stage dancer: 1
+Molfar: 1
+military athlete: 1
+crossword creator: 1
+wirefitter: 1
+landscape contractor: 1
+psychic: 1
+physical culture: 1
+poultry farming: 1
+Servant of God: 1
+tubist: 1
+medical specialty: 1
+political geographer: 1
+paleogeographer: 1
+FC Metalurh Zaporizhzhia: 1
+cotton planter: 1
+head of government: 1
+Q4376652: 1
+Peddler: 1
+supercentenarian: 1
+weaving master: 1
+junker: 1
+shtabs-kapitan: 1
+praporshchik: 1
+podporuchik: 1
+ordinary: 1
+courier: 1
+healer: 1
+confectioner: 1
+nursery school teacher: 1
+plant breeding: 1
+burgomaster: 1
+governess: 1
+mountain rescuer: 1
+Q99756919: 1
+chief manager: 1
+реставратор тканин: 1
+evangelist: 1
+Idist: 1
+Basilian monks: 1
+land surveyor in Poland: 1
+lord mayor: 1
+kolkhoz chairperson: 1
+provincial leader of the nobility: 1
+health activist: 1
+marshal: 1
+ethnobotanist: 1
+diacon, caterisit: 1
+udarnik: 1
+Commander: 1
+Romanian scholar: 1
+medicine: 1
+pedophile: 1
+digger: 1
+medical examiner: 1
+rigger: 1
+flight navigator: 1
+ierey: 1
+Hasidic literature: 1
+Halakha: 1
+iron and steel industry: 1
+Q111329737: 1
+художник-оформлювач: 1
+художник-конструктор: 1
+cabin boy: 1
+seacorp: 1
+miller: 1
+literary theory: 1
+laryngologist: 1
+slave driver: 1
+Regierungsdirektor: 1
+alchemist: 1
+cryobiologist: 1
+практичний психолог: 1
+landlord: 1
+senior management: 1
+голова обласної державної адміністрації: 1
+bridge builder: 1
+floriculturist: 1
+hypnotist: 1
+Q627308: 1
+academic staff: 1
+crop production worker: 1
+vegetable grower: 1
+chargé d'affaires: 1
+plasterer: 1
+cross country runner: 1
+history painter: 1
+artificial intelligence researcher: 1
+dairy worker: 1
+manual worker: 1
+spoken word artist: 1
+Protestant reformer: 1
+school superintendent: 1
+paraveterinary worker: 1
+folk song collector: 1
+comeniologist: 1
+Cichociemni: 1
+electromechanic: 1
+volcanologist: 1
+Seraphic Doctor: 1
+retired: 1
+wage labor: 1
+ocean rower: 1
+Generalstabsoffizier: 1
+summer biathlete: 1
+drafter: 1
+publishing house: 1
+train dispatcher: 1
+regent: 1
+thermal engineer: 1
+officer: 1
+Oriental Orthodox bishop: 1
+discoverer: 1
+para alpine skier: 1
+naval personnel: 1
+floral designer: 1
+certified translator: 1
+collaborator with Nazi Germany: 1
+starshyj soldat: 1
