@@ -1,18 +1,14 @@
 import json
 import os
 
-# Your current keyword map (we will update this later with the classifier)
-TOPIC_MAP = {
-    "Politics & Society": ["politician", "activist", "diplomat", "official", "governor", "lawyer", "judge", "revolutionary", "statesman"],
-    "Arts & Culture": ["writer", "painter", "poet", "musician", "composer", "actor", "artist", "sculptor", "architect", "film", "singer", "journalist"],
-    "Science & Education": ["scientist", "professor", "doctor", "physician", "engineer", "mathematician", "historian", "philosopher", "chemist", "physicist", "astronomer"],
-    "Sports": ["footballer", "athlete", "coach", "chess", "swimmer", "tennis", "boxer", "basketball", "cyclist"],
-    "Military": ["soldier", "officer", "commander", "general", "colonel", "pilot", "partisan", "military"]
-}
-
 script_dir = os.path.dirname(os.path.abspath(__file__))
+topic_map_path = os.path.join(script_dir, '..', 'data', 'topic_map.json')
 input_path = os.path.join(script_dir, '..', 'data', 'final_map_data.json')
 output_path = os.path.join(script_dir, '..', 'data', 'map_data_with_topics.json')
+
+# Load the TOPIC_MAP from JSON
+with open(topic_map_path, 'r', encoding='utf-8') as f:
+    TOPIC_MAP = json.load(f)
 
 print(f"Reading from: {input_path}")
 
@@ -28,31 +24,34 @@ stats = {topic: 0 for topic in TOPIC_MAP}
 stats["Other"] = 0
 
 for person in people:
-    # --- 1. CLASSIFICATION LOGIC ---
     assigned_topic = "Other"
+    assigned_subtopic = "Unknown" # NEW: Default subtopic
     occupations = [o.lower() for o in person.get('occupations', [])]
     
     found = False
-    for topic, keywords in TOPIC_MAP.items():
-        for occ in occupations:
-            if any(key in occ for key in keywords):
-                assigned_topic = topic
-                found = True
-                break
+    for main_topic, sub_dict in TOPIC_MAP.items():
+        for sub_topic, keywords in sub_dict.items():
+            for occ in occupations:
+                if any(key.lower() in occ for key in keywords):
+                    assigned_topic = main_topic
+                    assigned_subtopic = sub_topic # NEW: Capture the subtopic
+                    found = True
+                    break
+            if found: break
         if found: break
     
-    # --- 2. PRESERVE AND REBUILD ---
-    # We create a clean dictionary ensuring NO data is lost
+    # Update the person dictionary
     new_person = {
         "id": person.get("id"),
         "name": person.get("name"),
-        "birthplace": person.get("birthplace", "Unknown"), # Explicitly keeping this!
+        "birthplace": person.get("birthplace", "Unknown"),
         "coords": person.get("coords"),
         "occupations": person.get("occupations", []),
         "enWiki": person.get("enWiki"),
         "ukWiki": person.get("ukWiki"),
         "ruWiki": person.get("ruWiki"),
-        "topic": assigned_topic
+        "topic": assigned_topic,
+        "sub_topic": assigned_subtopic # NEW: Save it to the JSON
     }
     
     processed_people.append(new_person)
