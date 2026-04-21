@@ -186,11 +186,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div style="font-size:0.85em; color:gray;">${category}</div>
                 `;
                 
+                // Inside your clusterMarkers.forEach loop:
                 item.onclick = () => {
                     const detailPanel = document.getElementById('person-detail-panel');
                     const detailContent = document.getElementById('detail-content');
                     const content = marker.getPopup().getContent();
                     
+                    // Fill the content
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = content;
                     const name = tempDiv.querySelector('.popup-title').innerText;
@@ -198,21 +200,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('detail-name').innerText = name;
                     detailContent.innerHTML = content; 
                     
-                    // Cleanup duplicate name inside the content
                     if(detailContent.querySelector('.popup-title')) {
                         detailContent.querySelector('.popup-title').remove();
                     }
 
-                    // Slide the detail panel out from behind the list
+                    // Slide the person panel UP from the bottom
                     detailPanel.classList.add('open');
                     
-                    // Center the person in the remaining map space
-                    // 350 (List) + 350 (Detail) + 50 (Buffer) = 750px
+                    // Adjust map so the point is visible above the bottom panel
                     map.flyTo(marker.getLatLng(), map.getZoom(), {
-                        paddingTopLeft: [750, 0], 
+                        paddingBottomRight: [0, window.innerHeight / 2], // Account for 50vh height
+                        paddingTopLeft: [370, 0], // Account for 350px width
                         duration: 0.5
                     });
                 };
+
+                
                 listContent.appendChild(item);
             });
 
@@ -253,12 +256,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 });
 
+// Global close function
 window.closeAllPanels = function() {
-    // Slide detail back behind list first
+    // 1. Person panel slides DOWN
     document.getElementById('person-detail-panel').classList.remove('open');
     
-    // Then slide the list away
-    setTimeout(() => {
-        document.getElementById('cluster-list-panel').classList.remove('open');
-    }, 150);
+    // 2. People Here panel slides LEFT
+    document.getElementById('cluster-list-panel').classList.remove('open');
 };
