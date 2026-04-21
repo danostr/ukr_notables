@@ -1,34 +1,39 @@
 import json
 from collections import Counter
+import os
 
-print("Reading notable_people.json...")
+# This finds the directory where the script itself is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# 1. Load your massive dataset
-with open('_notable_people.json', 'r', encoding='utf-8') as f:
-    people = json.load(f)
+# This goes up one level to the project root, then into the data folder
+file_path = os.path.join(script_dir, '..', 'data', 'final_map_data.json')
+output_path = os.path.join(script_dir, '..', 'data', 'occupations_list.txt')
 
-# 2. Extract every occupation into a massive list
+print(f"Targeting data at: {os.path.abspath(file_path)}")
+
+try:
+    with open(file_path, 'r', encoding='utf-8') as f:
+        people = json.load(f)
+except FileNotFoundError:
+    print(f"Error: Could not find final_map_data.json at {file_path}")
+    exit()
+
 all_occupations = []
 for person in people:
-    all_occupations.extend(person['occupations'])
+    all_occupations.extend(person.get('occupations', []))
 
-# 3. Count how many people have each occupation
 occupation_counts = Counter(all_occupations)
-
-# 4. Sort them from most common (e.g., 'politician') to least common
 sorted_occupations = occupation_counts.most_common()
 
-# 5. Save it to a readable text file
-output_file = 'occupations_list.txt'
-with open(output_file, 'w', encoding='utf-8') as f:
+with open(output_path, 'w', encoding='utf-8') as f:
     f.write("OCCUPATIONS IN UKRAINE DATASET (Sorted by frequency)\n")
     f.write("="*55 + "\n")
     for occ, count in sorted_occupations:
         f.write(f"{occ}: {count}\n")
 
 print(f"\nSuccess! Found {len(occupation_counts)} unique occupations.")
-print("Here are the top 10 most common:")
+print("Top 10 most common:")
 for occ, count in sorted_occupations[:10]:
     print(f" - {occ} ({count} people)")
     
-print(f"\nOpen '{output_file}' to see the full list!")
+print(f"\nResults saved to: {output_path}")

@@ -19,69 +19,103 @@
 
     <div id="map"></div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <div id="filter-container" style="position: absolute; top: 20px; right: 20px; z-index: 1000; background: white; padding: 10px; border-radius: 5px;">
+        <label for="topic-filter"><b>Filter by Topic:</b></label><br>
+        <select id="topic-filter">
+            <option value="all">All People</option>
+            <option value="Politics & Society">Politics & Society</option>
+            <option value="Arts & Culture">Arts & Culture</option>
+            <option value="Science & Education">Science & Education</option>
+            <option value="Sports">Sports</option>
+            <option value="Military">Military</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+
     
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
     <script>
-    var map = L.map('map').setView([48.3794, 31.1656], 6);
+        var map = L.map('map').setView([48.3794, 31.1656], 6);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
-    var markers = L.markerClusterGroup();
+        var markers = L.markerClusterGroup();
+        let allPeople = []; // Storage for filtering
 
-    console.log("Starting to fetch data...");
+        console.log("Fetching categorized data...");
 
-    // Point to the new high-quality file
-    fetch('data/final_map_data.json')
-        .then(response => response.json())
-        .then(people => {
-            console.log("High-quality data loaded:", people.length);
+        // FETCH THE NEW VERSION
+        fetch('data/map_data_with_topics.json')
+            .then(response => response.json())
+            .then(data => {
+                allPeople = data;
+                console.log("Data loaded. Total:", allPeople.length);
+                renderMarkers('all');
+            })
+            .catch(err => console.error("Error loading JSON:", err));
+        
+        // --- WRAP THE LISTENER HERE ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterElement = document.getElementById('topic-filter');
             
-            people.forEach((person) => {
-                if (person.coords) {
-                    const match = person.coords.match(/Point\(([^ ]+) ([^ ]+)\)/);
-                    if (match) {
-                        const lon = parseFloat(match[1]);
-                        const lat = parseFloat(match[2]);
-
-                        const occupations = person.occupations || [];
-                        const occupationText = occupations.length > 0 ? occupations.join(', ') : "Information not available";
-
-                        // Build links (Now we know at least one will exist)
-                        let wikiLinksHTML = "";
-                        if (person.enWiki) wikiLinksHTML += `<a href="${person.enWiki}" target="_blank" style="margin-right:10px;">🇬🇧 English</a>`;
-                        if (person.ukWiki) wikiLinksHTML += `<a href="${person.ukWiki}" target="_blank" style="margin-right:10px;">🇺🇦 Ukrainian</a>`;
-                        if (person.ruWiki) wikiLinksHTML += `<a href="${person.ruWiki}" target="_blank">🇷🇺 Russian</a>`;
-
-                        const popupContent = `
-                            <div style="font-family: sans-serif; min-width: 220px;">
-                                <h3 style="margin: 0 0 5px 0; color: #2c3e50;">${person.name}</h3>
-                                <p style="margin: 5px 0;"><b>Birthplace:</b> ${person.birthplace}</p>
-                                <p style="margin: 5px 0;"><b>Occupation:</b> <span style="color: #7f8c8d;">${occupationText}</span></p>
-                                <hr style="border: 0; border-top: 1px solid #eee;">
-                                <div style="margin-top: 10px;">
-                                    <b>Read biography:</b><br>
-                                    <div style="margin-top: 5px;">${wikiLinksHTML}</div>
-                                </div>
-                            </div>
-                        `;
-
-                        const singleMarker = L.marker([lat, lon]).bindPopup(popupContent);
-                        markers.addLayer(singleMarker);
-                    }
-                }
-            });
-            
-            map.addLayer(markers);
-            if (markers.getLayers().length > 0) {
-                map.fitBounds(markers.getBounds());
+            if (filterElement) {
+                filterElement.addEventListener('change', function(e) {
+                    renderMarkers(e.target.value);
+                });
+                console.log("Success: Listener attached to dropdown.");
+            } else {
+                console.error("Error: Could not find 'topic-filter' in your HTML.");
             }
         });
-</script>
+        // --- END WRAP ---
+        
+        function renderMarkers(selectedTopic) {
+            console.log("Filtering for:", selectedTopic);
+            markers.clearLayers(); // Wipe the map clean
+            
+            allPeople.forEach(person => {
+                // Filter logic
+                if (selectedTopic !== 'all' && person.topic !== selectedTopic) return;
+
+                const match = person.coords.match(/Point\(([^ ]+) ([^ ]+)\)/);
+                if (match) {
+                    const lon = parseFloat(match[1]);
+                    const lat = parseFloat(match[2]);
+
+                    let wikiLinksHTML = "";
+                    if (person.enWiki) wikiLinksHTML += `<a href="${person.enWiki}" target="_blank">🇬🇧 EN</a> `;
+                    if (person.ukWiki) wikiLinksHTML += `<a href="${person.ukWiki}" target="_blank">🇺🇦 UK</a> `;
+                    if (person.ruWiki) wikiLinksHTML += `<a href="${person.ruWiki}" target="_blank">🇷🇺 RU</a> `;
+
+                    const popupContent = `
+                        <div style="font-family: sans-serif; min-width: 200px;">
+                            <h3>${person.name}</h3>
+                            <p><b>Birthplace:</b> ${person.birthplace}</p> <p><b>Topic:</b> ${person.topic}</p>
+                            <p><b>Occupation:</b> ${person.occupations.join(', ')}</p>
+                            <hr>
+                            ${wikiLinksHTML}
+                        </div>
+                    `;
+
+                    const marker = L.marker([lat, lon]).bindPopup(popupContent);
+                    markers.addLayer(marker);
+                }
+            });
+
+            map.addLayer(markers);
+            console.log("Markers updated.");
+        }
+
+        // Dropdown Event Listener
+        document.getElementById('topic-filter').addEventListener('change', function(e) {
+            renderMarkers(e.target.value);
+        });
+    </script>
 
 </body>
 </html>
