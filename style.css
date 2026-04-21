@@ -1,0 +1,75 @@
+/* Base Resets */
+body { margin: 0; padding: 0; font-family: sans-serif; }
+
+/* Default Light Theme (Map) */
+#map { height: 100vh; width: 100vw; background-color: #f8f9fa; }
+.leaflet-tile-pane { transition: filter 0.3s ease, opacity 0.3s ease; }
+
+/* Dark Mode: User's Custom Map Blending */
+body.dark-mode #map { 
+    background-color: #143263; /* Mobile dark blue */
+}
+body.dark-mode .leaflet-tile-pane {
+    filter: invert(100%) brightness(110%);
+    opacity: 0.6; 
+}
+
+/* Dark Mode: Filter Panel Styling */
+body.dark-mode #filter-container {
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+}
+body.dark-mode #filter-container select {
+    background-color: #2b2b45;
+    color: #ffffff;
+    border: 1px solid #4a4a6a;
+}
+body.dark-mode hr { border-top-color: #4a4a6a !important; }
+
+/* Theme Toggle Button Styling */
+#theme-toggle {
+    width: 100%;
+    padding: 8px;
+    background-color: #0057b7; /* Ukrainian Blue */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+#theme-toggle:hover { background-color: #004494; }
+
+/* Button colors flip in dark mode to Ukrainian Yellow */
+body.dark-mode #theme-toggle { background-color: #ffd700; color: #1a1a2e; }
+body.dark-mode #theme-toggle:hover { background-color: #e6c200; }
+
+/* Floating UI Panel (Replaces all inline styles) */
+#filter-container {
+    position: absolute; 
+    top: 20px; 
+    right: 20px; 
+    z-index: 1000; 
+    background: white; 
+    padding: 15px; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Dropdown Menus */
+#filter-container select {
+    width: 200px; 
+    margin-top: 5px; 
+    margin-bottom: 10px; 
+    padding: 5px;
+}
+
+/* Map Popup Styling */
+.popup-container { min-width: 220px; }
+.popup-title { margin: 0 0 5px 0; color: #0057b7; } /* Ukrainian Blue */
+.popup-detail { margin: 2px 0; }
+.popup-category { color: #666; font-weight: bold; }
+.popup-divider { border: 0; border-top: 1px solid #eee; margin: 10px 0; }
+.popup-links { display: flex; gap: 15px; font-size: 1.2em; }
+.popup-links a { text-decoration: none; }

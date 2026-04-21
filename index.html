@@ -9,46 +9,16 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     
-    <style>
-        /* Base Resets */
-        body { margin: 0; padding: 0; font-family: sans-serif; }
-        #map { height: 100vh; width: 100vw; }
-
-        /* Floating UI Panel (Replaces all inline styles) */
-        #filter-container {
-            position: absolute; 
-            top: 20px; 
-            right: 20px; 
-            z-index: 1000; 
-            background: white; 
-            padding: 15px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        
-        /* Dropdown Menus */
-        #filter-container select {
-            width: 200px; 
-            margin-top: 5px; 
-            margin-bottom: 10px; 
-            padding: 5px;
-        }
-
-        /* Map Popup Styling */
-        .popup-container { min-width: 220px; }
-        .popup-title { margin: 0 0 5px 0; color: #0057b7; } /* Ukrainian Blue */
-        .popup-detail { margin: 2px 0; }
-        .popup-category { color: #666; font-weight: bold; }
-        .popup-divider { border: 0; border-top: 1px solid #eee; margin: 10px 0; }
-        .popup-links { display: flex; gap: 15px; font-size: 1.2em; }
-        .popup-links a { text-decoration: none; }
-    </style>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
     <div id="map"></div>
 
     <div id="filter-container">
+        <button id="theme-toggle">🌙 Switch to Dark Mode</button>
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+
         <label for="topic-filter"><b>Main Category:</b></label><br>
         <select id="topic-filter">
             <option value="all">All People (76k)</option>
@@ -71,155 +41,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
-    <script>
-        // Ensure the DOM is fully loaded before executing scripts
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // ==========================================
-            // 1. CONFIGURATION & STATE
-            // ==========================================
-            // Data structure defining the hierarchy of topics to populate the second dropdown
-            const subTopicsMap = {
-                "Politics & Society": ["All", "Government & Law", "Religion", "Activism & Media"],
-                "Arts & Culture": ["All", "Literature", "Visual Arts", "Performing Arts", "Music", "TV & Internet Influencer", "Cinema & Filmmaking"],
-                "Science & Education": ["All", "Science & Math", "Humanities", "Education", "Engineering & Tech"],
-                "Medicine": ["All", "Healthcare"],
-                "Sports": ["All", "Football", "Combat Sports", "Athletics & Gymnastics", "Winter Sports", "Water Sports", "Other Sports"],
-                "Military": ["All", "Armed Forces"],
-                "Business & Labor": ["All", "Business", "Transport & Aviation", "Labor & Agriculture"],
-                "Other": ["All", "Unknown"]
-            };
-
-            // Master storage for the fetched JSON dataset
-            let allPeople = []; 
-
-            // DOM Elements
-            const mainFilter = document.getElementById('topic-filter');
-            const subFilter = document.getElementById('sub-topic-filter');
-            const subLabel = document.getElementById('sub-topic-label');
-
-            // ==========================================
-            // 2. MAP INITIALIZATION
-            // ==========================================
-            // Center map on the geographic center of Ukraine
-            const map = L.map('map').setView([48.3794, 31.1656], 6);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-
-            // Initialize the MarkerCluster group (vital for rendering 76k+ points smoothly)
-            const markers = L.markerClusterGroup();
-
-            // ==========================================
-            // 3. CORE RENDERING ENGINE
-            // ==========================================
-            function renderMarkers() {
-                const mainTopic = mainFilter.value;
-                const subTopic = subFilter.value;
-                
-                console.log(`Filtering for: ${mainTopic} > ${subTopic || 'All'}`);
-                
-                // Clear the map of existing points before applying new filters
-                markers.clearLayers(); 
-
-                allPeople.forEach(person => {
-                    // --- FILTER LOGIC ---
-                    if (mainTopic !== 'all' && person.topic !== mainTopic) return;
-                    if (mainTopic !== 'all' && subTopic && subTopic !== 'All' && person.sub_topic !== subTopic) return;
-
-                    // --- COORDINATE PARSING ---
-                    // Parses "Point(Longitude Latitude)" format provided by Wikidata
-                    const match = person.coords.match(/Point\(([^ ]+) ([^ ]+)\)/);
-                    if (match) {
-                        const lon = parseFloat(match[1]);
-                        const lat = parseFloat(match[2]);
-
-                        // --- UI GENERATION ---
-                        let wikiLinksHTML = "";
-                        if (person.enWiki) wikiLinksHTML += `<a href="${person.enWiki}" target="_blank" style="text-decoration:none;">🇬🇧</a> `;
-                        if (person.ukWiki) wikiLinksHTML += `<a href="${person.ukWiki}" target="_blank" style="text-decoration:none;">🇺🇦</a> `;
-                        if (person.ruWiki) wikiLinksHTML += `<a href="${person.ruWiki}" target="_blank" style="text-decoration:none;">🇷🇺</a> `;
-
-                        // Format textual data gracefully to avoid "undefined" strings
-                        const subTopicText = (person.sub_topic && person.sub_topic !== 'Unknown') ? ` > ${person.sub_topic}` : '';
-                        const occupationsText = (person.occupations && person.occupations.length > 0) ? person.occupations.join(', ') : '<i>Not specified</i>';
-
-                        // Construct the popup using our CSS classes
-                        const popupContent = `
-                            <div class="popup-container">
-                                <h3 class="popup-title">${person.name}</h3>
-                                <p class="popup-detail"><b>Birthplace:</b> ${person.birthplace}</p>
-                                <p class="popup-detail"><b>Category:</b> <span class="popup-category">${person.topic}${subTopicText}</span></p>
-                                <p class="popup-detail"><b>Occupation:</b> ${occupationsText}</p>
-                                <hr class="popup-divider">
-                                <div class="popup-links">${wikiLinksHTML}</div>
-                            </div>
-                        `;
-
-                        // Attach marker to the cluster group
-                        const marker = L.marker([lat, lon]).bindPopup(popupContent);
-                        markers.addLayer(marker);
-                    }
-                });
-
-                // Apply the newly built cluster group to the map
-                map.addLayer(markers);
-                console.log(`Markers updated: ${markers.getLayers().length} people visible.`);
-            }
-
-            // ==========================================
-            // 4. EVENT LISTENERS
-            // ==========================================
-            mainFilter.addEventListener('change', function(e) {
-                const selectedMain = e.target.value;
-                subFilter.innerHTML = ''; // Wipe existing sub-options
-                
-                if (selectedMain !== 'all' && subTopicsMap[selectedMain]) {
-                    // Reveal the sub-category dropdown
-                    subFilter.style.display = 'block';
-                    subLabel.style.display = 'inline-block';
-                    
-                    // Populate options dynamically based on the subTopicsMap
-                    subTopicsMap[selectedMain].forEach(st => {
-                        const opt = document.createElement('option');
-                        opt.value = st;
-                        opt.innerText = st === 'All' ? `All in ${selectedMain}` : st;
-                        subFilter.appendChild(opt);
-                    });
-                } else {
-                    // Hide the sub-category dropdown if "All People" is active
-                    subFilter.style.display = 'none';
-                    subLabel.style.display = 'none';
-                }
-                
-                renderMarkers(); // Redraw map immediately
-            });
-
-            subFilter.addEventListener('change', function() {
-                renderMarkers(); // Redraw map when sub-category changes
-            });
-
-            // ==========================================
-            // 5. DATA FETCH & EXECUTION
-            // ==========================================
-            console.log("Fetching categorized map data...");
-            fetch('data/map_data_with_topics.json')
-                .then(response => {
-                    if (!response.ok) throw new Error("Network response was not ok");
-                    return response.json();
-                })
-                .then(data => {
-                    allPeople = data;
-                    console.log(`Data successfully loaded. Total records: ${allPeople.length}`);
-                    renderMarkers(); // Initial draw of the map
-                })
-                .catch(err => {
-                    console.error("Error loading JSON data:", err);
-                    alert("Failed to load map data. Make sure you are running a local web server.");
-                });
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
