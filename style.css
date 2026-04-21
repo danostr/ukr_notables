@@ -73,3 +73,80 @@ body.dark-mode #theme-toggle:hover { background-color: #e6c200; }
 .popup-divider { border: 0; border-top: 1px solid #eee; margin: 10px 0; }
 .popup-links { display: flex; gap: 15px; font-size: 1.2em; }
 .popup-links a { text-decoration: none; }
+
+/* ==========================================
+   CUSTOM CLUSTER COLORS (HIGH CONTRAST GRADIENTS)
+   ========================================== */
+
+/* --- GENERAL TEXT STYLING --- */
+/* Light Mode Text */
+.marker-cluster div {
+    color: white !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Dark Mode Text */
+body.dark-mode .marker-cluster-small div,
+body.dark-mode .marker-cluster-medium div,
+body.dark-mode .marker-cluster-large div {
+    color: white !important;
+    /* Stronger dark shadow so the white text is actually readable on the yellow background */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); 
+}
+
+/* --- LIGHT MODE: SKY BLUE -> ROYAL BLUE -> NAVY --- */
+/* Small Clusters (< 10) : Bright Sky Blue */
+.marker-cluster-small { background-color: rgba(56, 189, 248, 0.4) !important; }
+.marker-cluster-small div { background-color: rgba(2, 132, 199, 0.9) !important; }
+
+/* Medium Clusters (10-99) : Royal Blue */
+.marker-cluster-medium { background-color: rgba(59, 130, 246, 0.4) !important; }
+.marker-cluster-medium div { background-color: rgba(29, 78, 216, 0.9) !important; }
+
+/* Large Clusters (100+) : Deep Navy / Indigo */
+.marker-cluster-large { background-color: rgba(49, 46, 129, 0.4) !important; }
+.marker-cluster-large div { background-color: rgba(30, 27, 75, 0.9) !important; }
+
+
+/* --- DARK MODE: YELLOW -> ORANGE -> RED --- */
+/* Small Clusters (< 10) : Lemon Yellow */
+body.dark-mode .marker-cluster-small { background-color: rgba(253, 224, 71, 0.4) !important; }
+body.dark-mode .marker-cluster-small div { background-color: rgba(234, 179, 8, 0.9) !important; }
+
+/* Medium Clusters (10-99) : Vibrant Orange */
+body.dark-mode .marker-cluster-medium { background-color: rgba(251, 146, 60, 0.4) !important; }
+body.dark-mode .marker-cluster-medium div { background-color: rgba(234, 88, 12, 0.9) !important; }
+
+/* Large Clusters (100+) : Fiery Red */
+body.dark-mode .marker-cluster-large { background-color: rgba(248, 113, 113, 0.4) !important; }
+body.dark-mode .marker-cluster-large div { 
+    background-color: rgba(220, 38, 38, 0.9) !important; 
+    /* Force white text on the deep red background so it stays readable */
+    color: white !important; 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   INDIVIDUAL POINT MARKERS (CUSTOM DOTS)
+   ========================================== */
+
+/* The base style for the dot */
+.custom-dot-marker {
+    background-color: #0057b7; /* Ukrainian Blue */
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0,0,0,0.4);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Dark Mode: Switch the dot to Ukrainian Yellow */
+body.dark-mode .custom-dot-marker {
+    background-color: #ffd700; /* Ukrainian Yellow */
+    border: 2px solid #143263; /* Match your map blue */
+}
+
+/* Hover effect to make it feel interactive */
+.custom-dot-marker:hover {
+    transform: scale(1.2);
+    filter: brightness(1.2);
+}

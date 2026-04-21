@@ -31,7 +31,34 @@ document.addEventListener('DOMContentLoaded', function() {
         attribution: '© OpenStreetMap contributors, © CARTO'
     }).addTo(map);
 
-    const markers = L.markerClusterGroup();
+    // Initialize MarkerCluster with custom settings
+    const markers = L.markerClusterGroup({
+        spiderfyOnMaxZoom: true,    
+        showCoverageOnHover: false, 
+        zoomToBoundsOnClick: true,
+        maxClusterRadius: 150,
+        
+        // NEW: Customizing the boundaries for Small, Medium, and Large clusters
+        iconCreateFunction: function(cluster) {
+            const count = cluster.getChildCount();
+            let sizeClass = 'marker-cluster-';
+
+            // Define your new boundaries here!
+            if (count < 50) {
+                sizeClass += 'small';     // Less than 50 people
+            } else if (count < 500) {
+                sizeClass += 'medium';    // Between 50 and 499 people
+            } else {
+                sizeClass += 'large';     // 500 people or more
+            }
+
+            return L.divIcon({
+                html: `<div><span>${count}</span></div>`,
+                className: `marker-cluster ${sizeClass}`,
+                iconSize: L.point(40, 40)
+            });
+        }
+    });
 
     // ==========================================
     // 3. CORE RENDERING ENGINE
@@ -71,7 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
 
-                const marker = L.marker([lat, lon]).bindPopup(popupContent);
+                // Create a custom div-based icon instead of the default image pin
+                const dotIcon = L.divIcon({
+                    className: 'custom-dot-marker',
+                    iconSize: [12, 12], // Size of the dot in pixels
+                    iconAnchor: [6, 6]  // Anchor the center of the dot to the coordinates
+                });
+
+                const marker = L.marker([lat, lon], { icon: dotIcon }).bindPopup(popupContent);
                 markers.addLayer(marker);
             }
         });
