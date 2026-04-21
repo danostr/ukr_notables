@@ -12,6 +12,23 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+    
+
+    <div id="cluster-list-panel">
+        <div class="panel-header">
+            <h2 id="panel-title" style="margin:0; font-size: 1.2em;">People at this location</h2>
+            <span class="close-panel" onclick="document.getElementById('cluster-list-panel').classList.remove('open')">&times;</span>
+        </div>
+        <div id="list-content"></div>
+    </div>
+
+    <div id="person-detail-panel">
+        <div class="panel-header">
+            <h2 id="detail-name" style="margin:0; font-size: 1.1em;">Name</h2>
+            <span class="close-panel" onclick="document.getElementById('person-detail-panel').classList.remove('open')" style="cursor:pointer; font-size:24px;">&times;</span>
+        </div>
+        <div id="detail-content"></div>
+    </div>
 
     <div id="map"></div>
 

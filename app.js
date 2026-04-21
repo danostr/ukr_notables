@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize MarkerCluster with custom settings
     const markers = L.markerClusterGroup({
-        spiderfyOnMaxZoom: true,    
+        spiderfyOnMaxZoom: false,    
         showCoverageOnHover: false, 
-        zoomToBoundsOnClick: true,
+        zoomToBoundsOnClick: false,
         maxClusterRadius: 150,
         
         // NEW: Customizing the boundaries for Small, Medium, and Large clusters
@@ -59,6 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    
 
     // ==========================================
     // 3. CORE RENDERING ENGINE
@@ -154,6 +156,83 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Listen for cluster clicks
+    markers.on('clusterclick', function (a) {
+        const cluster = a.layer;
+        const bounds = cluster.getBounds();
+        
+        // Check if all markers in the cluster have the exact same coordinates
+        const isStacked = bounds.getNorthEast().equals(bounds.getSouthWest());
+
+        if (isStacked || map.getZoom() === map.getMaxZoom()) {
+            // --- LOGIC FOR THE SIDE PANEL ---
+            const clusterMarkers = cluster.getAllChildMarkers();
+            const listContent = document.getElementById('list-content');
+            const panel = document.getElementById('cluster-list-panel');
+            
+            document.getElementById('panel-title').innerText = `${clusterMarkers.length} People Here`;
+            listContent.innerHTML = '';
+            
+            clusterMarkers.forEach(marker => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = marker.getPopup().getContent();
+                const name = tempDiv.querySelector('.popup-title').innerText;
+                const category = tempDiv.querySelector('.popup-category').innerText;
+
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <div style="font-weight:bold;">${name}</div>
+                    <div style="font-size:0.85em; color:gray;">${category}</div>
+                `;
+                
+                item.onclick = () => {
+                    const detailPanel = document.getElementById('person-detail-panel');
+                    const detailContent = document.getElementById('detail-content');
+                    const content = marker.getPopup().getContent();
+                    
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = content;
+                    const name = tempDiv.querySelector('.popup-title').innerText;
+                    
+                    document.getElementById('detail-name').innerText = name;
+                    detailContent.innerHTML = content; 
+                    
+                    // Cleanup duplicate name inside the content
+                    if(detailContent.querySelector('.popup-title')) {
+                        detailContent.querySelector('.popup-title').remove();
+                    }
+
+                    // Slide the detail panel out from behind the list
+                    detailPanel.classList.add('open');
+                    
+                    // Center the person in the remaining map space
+                    // 350 (List) + 350 (Detail) + 50 (Buffer) = 750px
+                    map.flyTo(marker.getLatLng(), map.getZoom(), {
+                        paddingTopLeft: [750, 0], 
+                        duration: 0.5
+                    });
+                };
+                listContent.appendChild(item);
+            });
+
+            panel.classList.add('open');
+        } else {
+            // --- LOGIC FOR SMOOTH ZOOMING ---
+            // This animates the map to fit the markers inside the cluster
+            map.flyToBounds(bounds, {
+                padding: [370, 20], // Adds a little breathing room around the edges
+                duration: 0.8,      // Animation time in seconds
+                easeLinearity: 0.35
+            });
+        }
+    });
+
+    // Close the panel if the user clicks the map background
+    map.on('click', () => {
+        document.getElementById('cluster-list-panel').classList.remove('open');
+    });
+
     // ==========================================
     // 5. DATA FETCH & EXECUTION
     // ==========================================
@@ -173,3 +252,13 @@ document.addEventListener('DOMContentLoaded', function() {
             alert("Failed to load map data. Make sure you are running a local web server.");
         });
 });
+
+window.closeAllPanels = function() {
+    // Slide detail back behind list first
+    document.getElementById('person-detail-panel').classList.remove('open');
+    
+    // Then slide the list away
+    setTimeout(() => {
+        document.getElementById('cluster-list-panel').classList.remove('open');
+    }, 150);
+};
