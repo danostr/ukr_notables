@@ -3,71 +3,112 @@ apply_topics.py
 ---------------
 This script acts as the final step in the data pipeline. 
 It takes the raw notable people data and assigns a main topic and sub-topic 
-based on the rules defined in topic_map.json.   
+based on the rules defined in topic_map.json.
+
+Crucially, it reads from the local data_pipeline folder, but outputs the 
+final JSON to the production data folder for the web application to use.
 """
 
 import json
 import os
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-topic_map_path = os.path.join(script_dir, '..', 'data', 'topic_map.json')
-input_path = os.path.join(script_dir, '..', 'data', 'final_map_data.json')
-output_path = os.path.join(script_dir, '..', 'data', 'map_data_with_topics.json')
+# ==========================================
+# CONFIGURATION & CONSTANTS
+# ==========================================
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Load the TOPIC_MAP from JSON
-with open(topic_map_path, 'r', encoding='utf-8') as f:
-    TOPIC_MAP = json.load(f)
+# Internal pipeline data directory
+PIPELINE_DATA_DIR = os.path.join(SCRIPT_DIR, '..', 'data')
+# Public production data directory (up two levels)
+MAIN_DATA_DIR = os.path.join(SCRIPT_DIR, '..', '..', 'data')
 
-print(f"Reading from: {input_path}")
+TOPIC_MAP_PATH = os.path.join(PIPELINE_DATA_DIR, 'topic_map.json')
+INPUT_PATH = os.path.join(PIPELINE_DATA_DIR, 'final_map_data.json')
+OUTPUT_PATH = os.path.join(MAIN_DATA_DIR, 'map_data_with_topics.json')
 
-try:
-    with open(input_path, 'r', encoding='utf-8') as f:
-        people = json.load(f)
-except FileNotFoundError:
-    print("Error: final_map_data.json not found!")
-    exit()
+def load_json(filepath: str):
+    """Safely loads a JSON file, exiting gracefully if not found."""
+    print(f"Loading data from: {os.path.abspath(filepath)}")
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Error: Could not find {os.path.basename(filepath)} at {filepath}")
+        exit()
 
-processed_people = []
-stats = {topic: 0 for topic in TOPIC_MAP}
-stats["Other"] = 0
-
-for person in people:
-    assigned_topic = "Other"
-    assigned_subtopic = "Unknown" # NEW: Default subtopic
-    occupations = [o.lower() for o in person.get('occupations', [])]
+def apply_topics(people_data: list, topic_map: dict) -> tuple:
+    """
+    Iterates through the dataset, matching occupations to the hierarchical 
+    topic map to assign main topics and sub-topics.
+    """
+    processed_people = []
     
-    found = False
-    for main_topic, sub_dict in TOPIC_MAP.items():
-        for sub_topic, keywords in sub_dict.items():
-            for occ in occupations:
-                if any(key.lower() in occ for key in keywords):
-                    assigned_topic = main_topic
-                    assigned_subtopic = sub_topic # NEW: Capture the subtopic
-                    found = True
-                    break
-            if found: break
-        if found: break
-    
-    # Update the person dictionary
-    new_person = {
-        "id": person.get("id"),
-        "name": person.get("name"),
-        "birthplace": person.get("birthplace", "Unknown"),
-        "coords": person.get("coords"),
-        "occupations": person.get("occupations", []),
-        "enWiki": person.get("enWiki"),
-        "ukWiki": person.get("ukWiki"),
-        "ruWiki": person.get("ruWiki"),
-        "topic": assigned_topic,
-        "sub_topic": assigned_subtopic # NEW: Save it to the JSON
-    }
-    
-    processed_people.append(new_person)
-    stats[assigned_topic] += 1
+    # Initialize stats dictionary
+    stats = {topic: 0 for topic in topic_map.keys()}
+    stats["Other"] = 0
 
-# Save to the NEW version
-with open(output_path, 'w', encoding='utf-8') as f:
-    json.dump(processed_people, f, ensure_ascii=False, indent=4)
+    for person in people_data:
+        assigned_main_topic = "Other"
+        assigned_sub_topic = "Unknown"
+        
+        # Lowercase all occupations for case-insensitive matching
+        occupations = [occ.lower() for occ in person.get('occupations', [])]
+        
+        match_found = False
+        
+        # Deep search through the hierarchy
+        for main_topic, sub_dict in topic_map.items():
+            for sub_topic, keywords in sub_dict.items():
+                for occ in occupations:
+                    # Substring match (e.g., 'medic' catches 'paramedic')
+                    if any(key.lower() in occ for key in keywords):
+                        assigned_main_topic = main_topic
+                        assigned_sub_topic = sub_topic
+                        match_found = True
+                        break
+                if match_found: break
+            if match_found: break
+        
+        # Construct the clean, final dictionary for this person
+        new_person = {
+            "id": person.get("id"),
+            "name": person.get("name"),
+            "birthplace": person.get("birthplace", "Unknown"),
+            "coords": person.get("coords"),
+            "occupations": person.get("occupations", []),
+            "enWiki": person.get("enWiki"),
+            "ukWiki": person.get("ukWiki"),
+            "ruWiki": person.get("ruWiki"),
+            "topic": assigned_main_topic,
+            "sub_topic": assigned_sub_topic
+        }
+        
+        processed_people.append(new_person)
+        stats[assigned_main_topic] += 1
+        
+    return processed_people, stats
 
-print(f"\nSuccessfully created: {output_path}")
-print(f"Sample Check - First Person Birthplace: {processed_people[0]['birthplace']}")
+def main():
+    print("--- STARTING TOPIC CLASSIFICATION ---")
+    
+    topic_map = load_json(TOPIC_MAP_PATH)
+    people_data = load_json(INPUT_PATH)
+    
+    print("\nApplying classification rules...")
+    processed_people, stats = apply_topics(people_data, topic_map)
+    
+    # Save to the production data folder
+    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+    with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:
+        json.dump(processed_people, f, ensure_ascii=False, indent=4)
+        
+    print(f"\nSuccessfully created production data: {os.path.abspath(OUTPUT_PATH)}")
+    print("\n--- Final Category Breakdown ---")
+    for category, count in stats.items():
+        print(f" - {category}: {count}")
+        
+    if processed_people:
+        print(f"\nSample Check - First Person Birthplace: {processed_people[0]['birthplace']}")
+
+if __name__ == "__main__":
+    main()

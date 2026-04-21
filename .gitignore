@@ -1,4 +1,15 @@
+# ==========================================
+# GIT IGNORE FILE
+# Tells Git which files and folders to exclude from the public repository
+# ==========================================
+
+# Ignore the backend data processing pipeline (scripts and raw data)
+# We only want the final map_data_with_topics.json in the repo
 data_pipeline/
-debug_error.txt
+
+# Ignore standard Python cache directories to keep the repo clean
 __pycache__/
+
+# Ignore local debugging logs and personal scratchpad notes
+debug_error.txt
 ideas.txt
