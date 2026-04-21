@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notable People of Ukraine</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { height: 100vh; width: 100vw; }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    
+    <script>
+        var map = L.map('map').setView([48.3794, 31.1656], 6);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // NEW: Create a cluster group layer
+        var markers = L.markerClusterGroup();
+
+        fetch('notable_people.json')
+            .then(response => response.json())
+            .then(people => {
+                
+                people.forEach(person => {
+                    if (person.coords) {
+                        const coordString = person.coords;
+                        const match = coordString.match(/Point\(([^ ]+) ([^ ]+)\)/);
+                        
+                        if (match) {
+                            const lon = parseFloat(match[1]);
+                            const lat = parseFloat(match[2]);
+
+                            const occupationText = person.occupations.length > 0 ? person.occupations.join(', ') : "Unknown";
+                            const wikiLink = person.article ? `<a href="${person.article}" target="_blank">Read on Wikipedia</a>` : "No Wikipedia article";
+
+                            const popupContent = `
+                                <h3>${person.name}</h3>
+                                <b>Born:</b> ${person.birthplace}<br>
+                                <b>Occupation:</b> ${occupationText}<br>
+                                <br>
+                                ${wikiLink}
+                            `;
+
+                            // NEW: Create the marker, but DON'T add it to the map directly. 
+                            // Add it to our 'markers' cluster group instead.
+                            const singleMarker = L.marker([lat, lon]).bindPopup(popupContent);
+                            markers.addLayer(singleMarker);
+                        }
+                    }
+                });
+
+                // NEW: Finally, add the entire cluster group to the map all at once
+                map.addLayer(markers);
+            })
+            .catch(error => console.error("Error loading data:", error));
+    </script>
+
+</body>
+</html>
