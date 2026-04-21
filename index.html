@@ -19,101 +19,158 @@
 
     <div id="map"></div>
 
-    <div id="filter-container" style="position: absolute; top: 20px; right: 20px; z-index: 1000; background: white; padding: 10px; border-radius: 5px;">
-        <label for="topic-filter"><b>Filter by Topic:</b></label><br>
-        <select id="topic-filter">
-            <option value="all">All People</option>
-            <option value="Politics & Society">Politics & Society</option>
-            <option value="Arts & Culture">Arts & Culture</option>
-            <option value="Science & Education">Science & Education</option>
-            <option value="Sports">Sports</option>
-            <option value="Military">Military</option>
-            <option value="Other">Other</option>
-        </select>
-    </div>
-
+    <div id="filter-container" style="position: absolute; top: 20px; right: 20px; z-index: 1000; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+    <label for="topic-filter"><b>Main Category:</b></label><br>
+    <select id="topic-filter" style="width: 200px; margin-top: 5px; margin-bottom: 10px; padding: 5px;">
+        <option value="all">All People (76k)</option>
+        <option value="Politics & Society">Politics & Society</option>
+        <option value="Arts & Culture">Arts & Culture</option>
+        <option value="Science & Education">Science & Education</option>
+        <option value="Medicine">Medicine</option>
+        <option value="Sports">Sports</option>
+        <option value="Military">Military</option>
+        <option value="Business & Labor">Business & Labor</option>
+        <option value="Other">Other / Unknown</option>
+    </select>
     
+    <br>
+    
+    <label id="sub-topic-label" for="sub-topic-filter" style="display: none;"><b>Sub-Category:</b></label><br>
+    <select id="sub-topic-filter" style="width: 200px; margin-top: 5px; padding: 5px; display: none;">
+        </select>
+</div>
+
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
     <script>
-        var map = L.map('map').setView([48.3794, 31.1656], 6);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-
-        var markers = L.markerClusterGroup();
-        let allPeople = []; // Storage for filtering
-
-        console.log("Fetching categorized data...");
-
-        // FETCH THE NEW VERSION
-        fetch('data/map_data_with_topics.json')
-            .then(response => response.json())
-            .then(data => {
-                allPeople = data;
-                console.log("Data loaded. Total:", allPeople.length);
-                renderMarkers('all');
-            })
-            .catch(err => console.error("Error loading JSON:", err));
-        
-        // --- WRAP THE LISTENER HERE ---
+        // 1. Wrap absolutely everything in the DOMContentLoaded listener
         document.addEventListener('DOMContentLoaded', function() {
-            const filterElement = document.getElementById('topic-filter');
             
-            if (filterElement) {
-                filterElement.addEventListener('change', function(e) {
-                    renderMarkers(e.target.value);
+            // --- MAP INITIALIZATION ---
+            var map = L.map('map').setView([48.3794, 31.1656], 6);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            var markers = L.markerClusterGroup();
+            let allPeople = []; // Storage for filtering
+
+            // --- FILTER DATA & DOM ELEMENTS ---
+            const subTopicsMap = {
+                "Politics & Society": ["All", "Government & Law", "Religion", "Activism & Media"],
+                "Arts & Culture": ["All", "Literature", "Visual Arts", "Performing Arts", "Music", "TV & Internet Influencer", "Cinema & Filmmaking"],
+                "Science & Education": ["All", "Science & Math", "Humanities", "Education", "Engineering & Tech"],
+                "Medicine": ["All", "Healthcare"],
+                "Sports": ["All", "Football", "Combat Sports", "Athletics & Gymnastics", "Winter Sports", "Water Sports", "Other Sports"],
+                "Military": ["All", "Armed Forces"],
+                "Business & Labor": ["All", "Business", "Transport & Aviation", "Labor & Agriculture"],
+                "Other": ["All", "Unknown"]
+            };
+
+            const mainFilter = document.getElementById('topic-filter');
+            const subFilter = document.getElementById('sub-topic-filter');
+            const subLabel = document.getElementById('sub-topic-label');
+
+            // --- RENDER FUNCTION ---
+            // (Moved up so the event listeners and fetch can use it)
+            function renderMarkers() {
+                // Read current values directly from the dropdowns
+                const mainTopic = mainFilter.value;
+                const subTopic = subFilter.value;
+                
+                console.log(`Filtering for: ${mainTopic} > ${subTopic || 'All'}`);
+                markers.clearLayers(); 
+
+                allPeople.forEach(person => {
+                    // Filter by Main Topic
+                    if (mainTopic !== 'all' && person.topic !== mainTopic) return;
+                    
+                    // Filter by Sub Topic
+                    if (mainTopic !== 'all' && subTopic && subTopic !== 'All' && person.sub_topic !== subTopic) return;
+
+                    const match = person.coords.match(/Point\(([^ ]+) ([^ ]+)\)/);
+                    if (match) {
+                        const lon = parseFloat(match[1]);
+                        const lat = parseFloat(match[2]);
+
+                        let wikiLinksHTML = "";
+                        if (person.enWiki) wikiLinksHTML += `<a href="${person.enWiki}" target="_blank" style="text-decoration:none;">🇬🇧</a> `;
+                        if (person.ukWiki) wikiLinksHTML += `<a href="${person.ukWiki}" target="_blank" style="text-decoration:none;">🇺🇦</a> `;
+                        if (person.ruWiki) wikiLinksHTML += `<a href="${person.ruWiki}" target="_blank" style="text-decoration:none;">🇷🇺</a> `;
+
+                        // Safely handle missing occupations or sub_topics
+                        const subTopicText = (person.sub_topic && person.sub_topic !== 'Unknown') ? ` > ${person.sub_topic}` : '';
+                        const occupationsText = (person.occupations && person.occupations.length > 0) ? person.occupations.join(', ') : '<i>Not specified</i>';
+
+                        const popupContent = `
+                            <div style="font-family: sans-serif; min-width: 220px;">
+                                <h3 style="margin: 0 0 5px 0; color: #0057b7;">${person.name}</h3>
+                                <p style="margin: 2px 0;"><b>Birthplace:</b> ${person.birthplace}</p>
+                                <p style="margin: 2px 0;"><b>Category:</b> <span style="color: #666;">${person.topic}${subTopicText}</span></p>
+                                <p style="margin: 2px 0;"><b>Occupation:</b> ${occupationsText}</p>
+                                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                                <div style="display: flex; gap: 15px; font-size: 1.2em;">${wikiLinksHTML}</div>
+                            </div>
+                        `;
+
+                        const marker = L.marker([lat, lon]).bindPopup(popupContent);
+                        markers.addLayer(marker);
+                    }
                 });
-                console.log("Success: Listener attached to dropdown.");
-            } else {
-                console.error("Error: Could not find 'topic-filter' in your HTML.");
+
+                map.addLayer(markers);
+                console.log(`Markers updated: ${markers.getLayers().length} people visible.`);
             }
-        });
-        // --- END WRAP ---
-        
-        function renderMarkers(selectedTopic) {
-            console.log("Filtering for:", selectedTopic);
-            markers.clearLayers(); // Wipe the map clean
-            
-            allPeople.forEach(person => {
-                // Filter logic
-                if (selectedTopic !== 'all' && person.topic !== selectedTopic) return;
 
-                const match = person.coords.match(/Point\(([^ ]+) ([^ ]+)\)/);
-                if (match) {
-                    const lon = parseFloat(match[1]);
-                    const lat = parseFloat(match[2]);
-
-                    let wikiLinksHTML = "";
-                    if (person.enWiki) wikiLinksHTML += `<a href="${person.enWiki}" target="_blank">🇬🇧 EN</a> `;
-                    if (person.ukWiki) wikiLinksHTML += `<a href="${person.ukWiki}" target="_blank">🇺🇦 UK</a> `;
-                    if (person.ruWiki) wikiLinksHTML += `<a href="${person.ruWiki}" target="_blank">🇷🇺 RU</a> `;
-
-                    const popupContent = `
-                        <div style="font-family: sans-serif; min-width: 200px;">
-                            <h3>${person.name}</h3>
-                            <p><b>Birthplace:</b> ${person.birthplace}</p> <p><b>Topic:</b> ${person.topic}</p>
-                            <p><b>Occupation:</b> ${person.occupations.join(', ')}</p>
-                            <hr>
-                            ${wikiLinksHTML}
-                        </div>
-                    `;
-
-                    const marker = L.marker([lat, lon]).bindPopup(popupContent);
-                    markers.addLayer(marker);
+            // --- EVENT LISTENERS ---
+            // Handle Main Filter Changes
+            mainFilter.addEventListener('change', function(e) {
+                const selectedMain = e.target.value;
+                
+                // Reset and populate the sub-filter
+                subFilter.innerHTML = ''; 
+                
+                if (selectedMain !== 'all' && subTopicsMap[selectedMain]) {
+                    // Show the sub-filter
+                    subFilter.style.display = 'block';
+                    subLabel.style.display = 'inline-block';
+                    
+                    // Add the specific sub-topics
+                    subTopicsMap[selectedMain].forEach(st => {
+                        const opt = document.createElement('option');
+                        opt.value = st;
+                        opt.innerText = st === 'All' ? `All in ${selectedMain}` : st;
+                        subFilter.appendChild(opt);
+                    });
+                } else {
+                    // Hide the sub-filter if "All People" is chosen
+                    subFilter.style.display = 'none';
+                    subLabel.style.display = 'none';
                 }
+                
+                // Re-render the map immediately after changing the main topic!
+                renderMarkers(); 
             });
 
-            map.addLayer(markers);
-            console.log("Markers updated.");
-        }
+            // Handle Sub Filter Changes (Now safely outside the main listener!)
+            subFilter.addEventListener('change', function() {
+                renderMarkers();
+            });
 
-        // Dropdown Event Listener
-        document.getElementById('topic-filter').addEventListener('change', function(e) {
-            renderMarkers(e.target.value);
+            // --- FETCH DATA ---
+            console.log("Fetching categorized data...");
+            fetch('data/map_data_with_topics.json')
+                .then(response => response.json())
+                .then(data => {
+                    allPeople = data;
+                    console.log("Data loaded. Total:", allPeople.length);
+                    renderMarkers(); // Initial render
+                })
+                .catch(err => console.error("Error loading JSON:", err));
         });
     </script>
 
