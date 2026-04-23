@@ -46,11 +46,11 @@ body.dark-mode .leaflet-tile-pane {
 
 #theme-toggle {
     width: 100%;
-    padding: 10px;
-    background-color: #0057b7;
+    padding: 8px;
+    background-color: #0057b7; /* Ukrainian Blue */
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
     transition: background 0.2s;
@@ -72,6 +72,31 @@ body.dark-mode #theme-toggle:hover { background-color: #f59e0b; }
 .marker-cluster-medium div { background-color: rgba(29, 78, 216, 0.9) !important; }
 .marker-cluster-large { background-color: rgba(49, 46, 129, 0.4) !important; }
 .marker-cluster-large div { background-color: rgba(30, 27, 75, 0.9) !important; }
+
+/* ==========================================
+   MARKER PULSE ANIMATION (ACTIVE ONLY)
+   ========================================== */
+@keyframes pulseMarker {
+    0% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(30, 64, 175, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0); }
+}
+
+@keyframes pulseMarkerDark {
+    0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+}
+
+/* We only apply this when a marker is clicked */
+.active-pulse {
+    animation: pulseMarker 2s infinite !important;
+    z-index: 1000 !important; /* Brings the pulsing marker to the front */
+}
+
+body.dark-mode .active-pulse {
+    animation: pulseMarkerDark 2s infinite !important;
+}
 
 /* ==========================================
    DARK MODE: CLUSTER GRADIENTS
@@ -245,7 +270,7 @@ body.dark-mode .btn-ru { background: #7f1d1d; color: #fee2e2; }
 #person-detail-panel {
     position: absolute; bottom: -60vh; left: 370px; width: 400px; height: 55vh;
     background: white; z-index: 2005; transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 -10px 30px rgba(0,0,0,0.1); border-radius: 16px 16px 0 0;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.1); border-radius: 16px 16px 16px 16px;
     display: flex; flex-direction: column; overflow: hidden;
 }
 #person-detail-panel.open { bottom: 0; }

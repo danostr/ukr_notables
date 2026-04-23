@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     let allPeople = []; 
+    let topicCounts = { main: {}, sub: {} };
 
     const mainFilter = document.getElementById('topic-filter');
     const subFilter = document.getElementById('sub-topic-filter');
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const map = L.map('map').setView([48.3794, 31.1656], 6);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 18,
+        maxZoom: 19, // Reverted to 19 so deep clustering breaks properly
         attribution: '© OpenStreetMap contributors, © CARTO'
     }).addTo(map);
 
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         spiderfyOnMaxZoom: false,    
         showCoverageOnHover: false, 
         zoomToBoundsOnClick: false,
-        maxClusterRadius: 150, 
+        maxClusterRadius: 120, 
         
         iconCreateFunction: function(cluster) {
             const count = cluster.getChildCount();
@@ -63,6 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         markers.clearLayers(); 
 
+        let visualizedCount = 0;
+
         allPeople.forEach(person => {
             if (mainTopic !== 'all' && person.topic !== mainTopic) return;
             if (mainTopic !== 'all' && subTopic && subTopic !== 'All' && person.sub_topic !== subTopic) return;
@@ -72,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const lon = parseFloat(match[1]);
                 const lat = parseFloat(match[2]);
 
-                // --- NEW WIKI BUTTON HTML ---
                 let wikiButtonsHTML = `<div class="wiki-button-container">`;
                 if (person.enWiki) wikiButtonsHTML += `<a href="${person.enWiki}" target="_blank" class="wiki-btn btn-en">EN</a>`;
                 if (person.ukWiki) wikiButtonsHTML += `<a href="${person.ukWiki}" target="_blank" class="wiki-btn btn-uk">UA</a>`;
@@ -82,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const subTopicText = (person.sub_topic && person.sub_topic !== 'Unknown') ? ` > ${person.sub_topic}` : '';
                 const occupationsText = (person.occupations && person.occupations.length > 0) ? person.occupations.join(', ') : '<i>Not specified</i>';
 
-                // --- NEW POPUP CARD HTML ---
                 const popupContent = `
                     <div class="popup-container">
                         <h3 class="popup-title">${person.name}</h3>
@@ -102,21 +103,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 const marker = L.marker([lat, lon], { icon: dotIcon }).bindPopup(popupContent);
-                
-                // CRITICAL: Attach the full data object to the marker for later use
                 marker.personData = person; 
                 
+                // TRACKING DIRECT MARKER CLICKS
+                marker.on('click', function(e) {
+                    // Clear pulse from all other markers
+                    document.querySelectorAll('.active-pulse').forEach(el => el.classList.remove('active-pulse'));
+                    // Add pulse to this marker
+                    if (e.target._icon) e.target._icon.classList.add('active-pulse');
+                });
+
                 markers.addLayer(marker);
+                visualizedCount++;
             }
         });
 
         map.addLayer(markers);
+
+        console.log(`Currently visualized people: ${visualizedCount}`);
     }
 
     // ==========================================
     // 4. EVENT LISTENERS
     // ==========================================
     
+document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const detailPanel = document.getElementById('person-detail-panel');
+            const listPanel = document.getElementById('cluster-list-panel');
+
+            // 1. If the individual person panel is open, close ONLY it first
+            if (detailPanel.classList.contains('open')) {
+                detailPanel.classList.remove('open');
+                
+                // Clear the active pulse and popup since we stepped back
+                document.querySelectorAll('.active-pulse').forEach(el => el.classList.remove('active-pulse'));
+                map.closePopup();
+            } 
+            // 2. If the person panel is already closed, but the list panel is open, close the list panel
+            else if (listPanel.classList.contains('open')) {
+                listPanel.classList.remove('open');
+            }
+        }
+    });
+
     mainFilter.addEventListener('change', function(e) {
         const selectedMain = e.target.value;
         subFilter.innerHTML = ''; 
@@ -126,7 +156,14 @@ document.addEventListener('DOMContentLoaded', function() {
             subTopicsMap[selectedMain].forEach(st => {
                 const opt = document.createElement('option');
                 opt.value = st;
-                opt.innerText = st === 'All' ? `All in ${selectedMain}` : st;
+                let count = 0;
+                if (st === 'All') {
+                    count = topicCounts.main[selectedMain] || 0;
+                    opt.innerText = `All in ${selectedMain} (${count.toLocaleString()})`;
+                } else {
+                    count = topicCounts.sub[`${selectedMain}|${st}`] || 0;
+                    opt.innerText = `${st} (${count.toLocaleString()})`;
+                }
                 subFilter.appendChild(opt);
             });
         } else {
@@ -157,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const listContent = document.getElementById('list-content');
             const panel = document.getElementById('cluster-list-panel');
             
-            // NEW: Set Title (City/Region) and Subtitle (Count)
             const firstPerson = clusterMarkers[0].personData;
             document.getElementById('panel-title').innerText = firstPerson.birthplace || "Location";
             document.getElementById('panel-subtitle').innerText = `${clusterMarkers.length} People Here`;
@@ -170,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 item.className = 'list-item';
                 item.innerHTML = `<div><strong>${data.name}</strong></div><div style="font-size:0.85em; color:gray;">${data.topic}</div>`;
                 
+                // TRACKING CLUSTER LIST CLICKS
                 item.onclick = () => {
                     const detailPanel = document.getElementById('person-detail-panel');
                     const detailContent = document.getElementById('detail-content');
@@ -180,25 +217,81 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     detailPanel.classList.add('open');
                     
+                    // Clear pulse from all other markers
+                    document.querySelectorAll('.active-pulse').forEach(el => el.classList.remove('active-pulse'));
+                    
+                    // DYNAMIC PADDING FIX: Prevent Leaflet from aborting on small windows
+                    // It will use 820px, OR the window width minus 100px (whichever is smaller)
+                    const safeLeftPadding = Math.max(0, Math.min(820, window.innerWidth - 100));
+                    const safeBottomPadding = Math.max(0, Math.min(window.innerHeight / 2, window.innerHeight - 100));
+                    
                     map.flyTo(marker.getLatLng(), map.getZoom(), {
                         paddingBottomRight: [0, window.innerHeight / 2],
-                        paddingTopLeft: [820, 0], // Adjusted for 20px gap
+                        paddingTopLeft: [820, 0],
                         duration: 0.5
+                    });
+
+                    // Wait for the map to finish moving and unclustering, then add pulse
+                    map.once('moveend', () => {
+                        if (marker._icon) marker._icon.classList.add('active-pulse');
                     });
                 };
                 listContent.appendChild(item);
             });
             panel.classList.add('open');
         } else {
+            // DYNAMIC PADDING FIX FOR CLUSTERS:
+            // Ensure horizontal padding never exceeds half the available screen width.
+            const safeHorizontalPadding = Math.max(0, Math.min(370, (window.innerWidth - 50) / 2));
+
             map.flyToBounds(bounds, {
-                padding: [370, 20], 
+                padding: [safeHorizontalPadding, 20], 
                 duration: 0.8,
                 easeLinearity: 0.35
             });
         }
     });
 
+    // Clear pulses when a popup is closed
+    map.on('popupclose', () => {
+        document.querySelectorAll('.active-pulse').forEach(el => el.classList.remove('active-pulse'));
+    });
+
     map.on('click', () => closeAllPanels());
+
+    // ==========================================
+    // NEW: CALCULATE DROPDOWN COUNTS
+    // ==========================================
+    function updateDropdownCounts() {
+        let totalPeople = 0;
+        topicCounts = { main: {}, sub: {} }; // Reset counts
+
+        // Count everyone
+        allPeople.forEach(person => {
+            totalPeople++;
+            
+            // Count Main Topics
+            topicCounts.main[person.topic] = (topicCounts.main[person.topic] || 0) + 1;
+            
+            // Count Sub Topics (Stored as "MainTopic|SubTopic" to avoid overlap)
+            const subKey = `${person.topic}|${person.sub_topic || 'Unknown'}`;
+            topicCounts.sub[subKey] = (topicCounts.sub[subKey] || 0) + 1;
+        });
+
+        // Update the Main Filter text
+        Array.from(mainFilter.options).forEach(opt => {
+            const topic = opt.value;
+            if (topic === 'all') {
+                opt.innerText = `All People (${totalPeople.toLocaleString()})`;
+            } else {
+                const count = topicCounts.main[topic] || 0;
+                // Only update the text if it doesn't already have a count (prevents appending twice)
+                if (!opt.innerText.includes('(')) {
+                    opt.innerText = `${opt.innerText} (${count.toLocaleString()})`;
+                }
+            }
+        });
+    }
 
     // ==========================================
     // 6. INITIAL LOAD
@@ -207,15 +300,20 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             allPeople = data;
+            updateDropdownCounts();
             renderMarkers(); 
         })
         .catch(err => console.error("Error loading JSON data:", err));
-});
 
-// ==========================================
-// 7. GLOBAL UTILITIES
-// ==========================================
-window.closeAllPanels = function() {
-    document.getElementById('person-detail-panel').classList.remove('open');
-    document.getElementById('cluster-list-panel').classList.remove('open');
-};
+    // ==========================================
+    // 7. GLOBAL UTILITIES
+    // ==========================================
+    window.closeAllPanels = function() {
+        document.getElementById('person-detail-panel').classList.remove('open');
+        document.getElementById('cluster-list-panel').classList.remove('open');
+        
+        // Clear the active pulse globally and close any popups
+        document.querySelectorAll('.active-pulse').forEach(el => el.classList.remove('active-pulse'));
+        if (typeof map !== 'undefined') map.closePopup();
+    };
+}); // <-- This is the final closing bracket for DOMContentLoaded
