@@ -65,7 +65,17 @@ body.dark-mode #theme-toggle:hover { background-color: #f59e0b; }
 /* ==========================================
    3. CLUSTERS & MARKERS
    ========================================== */
-.marker-cluster div { color: white !important; font-weight: bold; }
+.marker-cluster div { 
+    width: 34px !important;        /* Increased from default 30px */
+    height: 34px !important;       /* Increased from default 30px */
+    margin-top: 3px !important;    /* Reduced to center the larger inner circle */
+    margin-left: 3px !important;   /* Reduced to center the larger inner circle */
+    border-radius: 50% !important; /* Perfect circle */
+    line-height: 34px !important;  /* Vertically centers the text perfectly */
+    font-size: 12px !important;    /* Smaller, cleaner font size */
+    color: white !important; 
+    font-weight: bold; 
+}
 .marker-cluster-small { background-color: rgba(56, 189, 248, 0.4) !important; }
 .marker-cluster-small div { background-color: rgba(2, 132, 199, 0.9) !important; }
 .marker-cluster-medium { background-color: rgba(59, 130, 246, 0.4) !important; }

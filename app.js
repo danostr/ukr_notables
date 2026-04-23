@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
         spiderfyOnMaxZoom: false,    
         showCoverageOnHover: false, 
         zoomToBoundsOnClick: false,
+        animate: true,
+        animateAddingMarkers: true,
         maxClusterRadius: 120, 
         
         iconCreateFunction: function(cluster) {
