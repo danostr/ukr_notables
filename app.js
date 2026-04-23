@@ -84,7 +84,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 wikiButtonsHTML += `</div>`;
 
                 const subTopicText = (person.sub_topic && person.sub_topic !== 'Unknown') ? ` > ${person.sub_topic}` : '';
-                const occupationsText = (person.occupations && person.occupations.length > 0) ? person.occupations.join(', ') : '<i>Not specified</i>';
+                //const occupationsText = (person.occupations && person.occupations.length > 0) ? person.occupations.join(', ') : '<i>Not specified</i>';
+
+                // Build the entire <p> tag only if occupations exist, otherwise return an empty string
+                const occupationsHTML = (person.occupations && person.occupations.length > 0) 
+                    ? `<p class="popup-detail"><b>Occupation:</b> ${person.occupations.join(', ')}</p>` 
+                    : '';
 
                 const popupContent = `
                     <div class="popup-container">
@@ -92,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="popup-body">
                             <p class="popup-detail"><b>Birthplace:</b> ${person.birthplace}</p>
                             <p class="popup-detail"><b>Category:</b> <span class="popup-category">${person.topic}${subTopicText}</span></p>
-                            <p class="popup-detail"><b>Occupation:</b> ${occupationsText}</p>
+                            ${occupationsHTML}
                             ${wikiButtonsHTML}
                         </div>
                     </div>
