@@ -25,21 +25,39 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==========================================
     // 2. MAP INITIALIZATION
     // ==========================================
-    const map = L.map('map').setView([48.3794, 31.1656], 6);
+    const southWest = L.latLng(-75, -200); // South Pole
+    const northEast = L.latLng(85, 200);   // North Pole
+    const globeBounds = L.latLngBounds(southWest, northEast);
 
+    const map = L.map('map', {
+        center: [48.3794, 31.1656],
+        zoomDelta: 0.6,
+        zoomSnap: 0.15,
+        wheelPxPerZoomLevel: 60,
+        zoom: 6,
+        minZoom: 2.25,
+        maxBounds: globeBounds,
+        maxBoundsViscosity: 1.0 
+    });
+    
+    
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 19, // Reverted to 19 so deep clustering breaks properly
         attribution: '© OpenStreetMap contributors, © CARTO'
     }).addTo(map);
+
+    
+    
+
 
     // Initialize MarkerCluster with custom settings
     const markers = L.markerClusterGroup({
         spiderfyOnMaxZoom: false,    
         showCoverageOnHover: false, 
         zoomToBoundsOnClick: false,
-        animate: true,
+        animate: false,
         animateAddingMarkers: true,
-        maxClusterRadius: 120, 
+        maxClusterRadius: 140, 
         
         iconCreateFunction: function(cluster) {
             const count = cluster.getChildCount();
@@ -157,26 +175,57 @@ document.addEventListener('keydown', function(e) {
     mainFilter.addEventListener('change', function(e) {
         const selectedMain = e.target.value;
         subFilter.innerHTML = ''; 
+        
         if (selectedMain !== 'all' && subTopicsMap[selectedMain]) {
             subFilter.style.display = 'block';
             subLabel.style.display = 'inline-block';
-            subTopicsMap[selectedMain].forEach(st => {
+            
+            const subTopics = subTopicsMap[selectedMain];
+            
+            // NEW: If there is only "All" and ONE actual sub-topic (Array length of 2)
+            if (subTopics.length === 2) {
+                const singleSubTopic = subTopics[1]; 
                 const opt = document.createElement('option');
-                opt.value = st;
-                let count = 0;
-                if (st === 'All') {
-                    count = topicCounts.main[selectedMain] || 0;
-                    opt.innerText = `All in ${selectedMain} (${count.toLocaleString()})`;
-                } else {
-                    count = topicCounts.sub[`${selectedMain}|${st}`] || 0;
-                    opt.innerText = `${st} (${count.toLocaleString()})`;
-                }
+                opt.value = singleSubTopic;
+                
+                const count = topicCounts.sub[`${selectedMain}|${singleSubTopic}`] || 0;
+                opt.innerText = `${singleSubTopic} (${count.toLocaleString()})`;
+                
                 subFilter.appendChild(opt);
-            });
+                
+                // Disable the dropdown so it just acts as a read-only label
+                subFilter.disabled = true;
+                subFilter.style.opacity = '1.0'; 
+            } 
+            // NEW: If there are multiple sub-topics, build the normal dropdown
+            else {
+                subFilter.disabled = false;
+                subFilter.style.opacity = '1';
+                subFilter.style.cursor = 'pointer';
+                
+                subTopics.forEach(st => {
+                    const opt = document.createElement('option');
+                    opt.value = st;
+                    let count = 0;
+                    if (st === 'All') {
+                        count = topicCounts.main[selectedMain] || 0;
+                        opt.innerText = `All in ${selectedMain} (${count.toLocaleString()})`;
+                    } else {
+                        count = topicCounts.sub[`${selectedMain}|${st}`] || 0;
+                        opt.innerText = `${st} (${count.toLocaleString()})`;
+                    }
+                    subFilter.appendChild(opt);
+                });
+                
+                // Explicitly force the dropdown to reset to 'All'
+                subFilter.value = 'All';
+            }
         } else {
             subFilter.style.display = 'none';
             subLabel.style.display = 'none';
+            subFilter.disabled = false; // Reset just in case they go back to 'All People'
         }
+        
         renderMarkers(); 
     });
 
@@ -235,7 +284,7 @@ document.addEventListener('keydown', function(e) {
                     map.flyTo(marker.getLatLng(), map.getZoom(), {
                         paddingBottomRight: [0, window.innerHeight / 2],
                         paddingTopLeft: [820, 0],
-                        duration: 0.5
+                        duration: 0.8
                     });
 
                     // Wait for the map to finish moving and unclustering, then add pulse
