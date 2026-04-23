@@ -73,6 +73,25 @@ body.dark-mode #theme-toggle:hover { background-color: #f59e0b; }
 .marker-cluster-large { background-color: rgba(49, 46, 129, 0.4) !important; }
 .marker-cluster-large div { background-color: rgba(30, 27, 75, 0.9) !important; }
 
+/* ==========================================
+   DARK MODE: CLUSTER GRADIENTS
+   ========================================== */
+
+/* Small Clusters: Yellow */
+body.dark-mode .marker-cluster-small { background-color: rgba(253, 224, 71, 0.4) !important; }
+body.dark-mode .marker-cluster-small div { background-color: rgba(234, 179, 8, 0.9) !important; }
+
+/* Medium Clusters: Orange */
+body.dark-mode .marker-cluster-medium { background-color: rgba(251, 146, 60, 0.4) !important; }
+body.dark-mode .marker-cluster-medium div { background-color: rgba(234, 88, 12, 0.9) !important; }
+
+/* Large Clusters: Red */
+body.dark-mode .marker-cluster-large { background-color: rgba(248, 113, 113, 0.4) !important; }
+body.dark-mode .marker-cluster-large div { background-color: rgba(220, 38, 38, 0.9) !important; }
+
+/* Ensure cluster text remains bold and legible in Dark Mode */
+body.dark-mode .marker-cluster div { text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); }
+
 /* Custom Dot Markers */
 .custom-dot-marker { background-color: #1e40af; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.3); }
 body.dark-mode .custom-dot-marker { background-color: #fbbf24; border: 2px solid #111827; }
