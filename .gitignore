@@ -6,6 +6,7 @@
 # Ignore the backend data processing pipeline (scripts and raw data)
 # We only want the final map_data_with_topics.json in the repo
 data_pipeline/
+data/
 
 # Ignore standard Python cache directories to keep the repo clean
 __pycache__/
