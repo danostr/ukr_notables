@@ -12,7 +12,7 @@ self.onmessage = function (e) {
     if (type === 'load') {
         // Initialize the math engine
         index = new Supercluster({
-            radius: 140,
+            radius: 180,
             maxZoom: 19,
             minPoints: 2
         });

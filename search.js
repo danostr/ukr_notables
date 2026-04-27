@@ -24,11 +24,12 @@ export function initSearch() {
             return;
         }
 
-        // 1. ZONES
-        const zonesList = state.searchIndex.locations.zones || state.searchIndex.zones || [];
-        const zoneMatches = zonesList.filter(z => z.toLowerCase().includes(query)).slice(0, 3);
+        // 1. ZONES (1 Result)
+        const zonesObj = state.searchIndex.locations.zones || {};
+        const zonesList = Array.isArray(zonesObj) ? zonesObj : Object.keys(zonesObj);
+        const zoneMatches = zonesList.filter(z => z.toLowerCase().includes(query)).slice(0, 1);
 
-        // 2. LOCATIONS (Filter by the real birthplace string, which is item [3])
+        // 2. LOCATIONS (3 Results)
         const locationMatches = Object.keys(state.searchIndex.locations)
             .filter(key => {
                 if (key === 'zones') return false;
@@ -37,16 +38,18 @@ export function initSearch() {
             })
             .slice(0, 3);
 
-        // 3. PEOPLE
-        const peopleMatches = state.searchIndex.people.filter(p => p[1].includes(query)).slice(0, 7);
+        // 3. PEOPLE (8 Results)
+        const peopleMatches = state.searchIndex.people.filter(p => p[1].includes(query)).slice(0, 8);
 
         if (zoneMatches.length > 0 || locationMatches.length > 0 || peopleMatches.length > 0) {
             
             // --- RENDER ZONES 🌍 ---
             zoneMatches.forEach(zone => {
+                const zoneContext = Array.isArray(zonesObj) ? "Region/Country" : (zonesObj[zone] || "Region"); 
+                
                 const div = document.createElement('div');
                 div.className = 'search-result-item';
-                div.innerHTML = `🌍 <strong>${zone}</strong> <span style="font-size:0.8em; color:gray;">(Region/Country)</span>`;
+                div.innerHTML = `🌍 <strong>${zone}</strong> <span style="font-size:0.8em; color:gray;">(${zoneContext})</span>`;
                 
                 div.onclick = () => {
                     searchResults.style.display = 'none';
@@ -56,7 +59,6 @@ export function initSearch() {
                     state.activeZoneFilter = zone;
                     renderMarkers(); 
 
-                    // Check the geographic tree array (item 6)
                     const peopleInZone = state.allPeople.filter(p => (p[6] || []).includes(zone));
                     if (peopleInZone.length === 0) return;
 
@@ -109,7 +111,6 @@ export function initSearch() {
                     
                     map.flyTo([lat, lon], 12, { paddingTopLeft: [350, 0], duration: 1.0 });
 
-                    // Find people using the invisible unique key!
                     const peopleInLocation = state.searchIndex.people.filter(p => p[3] === locKey);
                     
                     const listContent = document.getElementById('list-content');
@@ -147,10 +148,16 @@ export function initSearch() {
 
             // --- RENDER PEOPLE 👤 ---
             peopleMatches.forEach(person => {
-                const [pId, searchString, displayName, locKey, realBirthplace] = person;
+                const [pId, searchString, displayName, locKey, realBirthplace, country] = person;
                 const div = document.createElement('div');
                 div.className = 'search-result-item';
-                div.innerHTML = `👤 <strong>${displayName}</strong> <span style="font-size:0.8em; color:gray;">(${realBirthplace})</span>`;
+                
+                // If the birthplace is already the country (e.g. "Ukraine"), prevent it from saying (Ukraine, Ukraine)
+                const displayLocation = (realBirthplace === country || !country || country === "Unknown") 
+                    ? realBirthplace 
+                    : `${realBirthplace}, ${country}`;
+
+                div.innerHTML = `👤 <strong>${displayName}</strong> <span style="font-size:0.8em; color:gray;">(${displayLocation})</span>`;
                 
                 div.onclick = () => {
                     searchResults.style.display = 'none';
