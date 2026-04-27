@@ -1,0 +1,157 @@
+// map.js
+import { state } from './state.js';
+import { generatePopupHTML, closeAllPanels } from './ui.js';
+
+const globeBounds = L.latLngBounds(L.latLng(-75, -200), L.latLng(85, 200));
+
+export const map = L.map('map', {
+    preferCanvas: true, center: [48.3794, 31.1656], zoomDelta: 0.6, 
+    zoomSnap: 0.15, wheelPxPerZoomLevel: 60, zoom: 6, minZoom: 2.25, 
+    maxBounds: globeBounds, maxBoundsViscosity: 1.0     
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19, attribution: '© OpenStreetMap contributors, © CARTO'
+}).addTo(map);
+
+export const markersLayer = L.featureGroup().addTo(map);
+
+const clusterWorker = new Worker('worker.js');
+let workerMessageId = 0;
+const workerCallbacks = {};
+
+clusterWorker.onmessage = function(e) {
+    const { id, result } = e.data;
+    if (workerCallbacks[id]) {
+        workerCallbacks[id](result);
+        delete workerCallbacks[id];
+    }
+};
+
+function askWorker(type, payload) {
+    return new Promise(resolve => {
+        const id = workerMessageId++;
+        workerCallbacks[id] = resolve;
+        clusterWorker.postMessage({ type, payload, id });
+    });
+}
+
+export async function renderMarkers() {
+    const mainTopic = document.getElementById('topic-filter').value;
+    const subTopic = document.getElementById('sub-topic-filter').value;
+    const geoJsonData = [];
+    
+    state.allPeople.forEach(person => {
+        const pId = person[0], pLat = person[1], pLon = person[2], 
+              pTopic = person[3], pSubTopic = person[4], 
+              geoTree = person[6] || []; // Grab the new tree array!
+
+        if (mainTopic !== 'all' && pTopic !== mainTopic) return;
+        if (mainTopic !== 'all' && subTopic && subTopic !== 'All' && pSubTopic !== subTopic) return;
+        
+        // Zone filtering now checks if the selected zone is anywhere inside the geographic tree
+        if (state.activeZoneFilter !== 'all' && !geoTree.includes(state.activeZoneFilter)) return;
+
+        geoJsonData.push({
+            type: "Feature", properties: { id: pId, topic: pTopic, sub_topic: pSubTopic },
+            geometry: { type: "Point", coordinates: [pLon, pLat] } 
+        });
+    });
+
+    await askWorker('load', { geoJsonData });
+    updateScreen();
+}
+
+async function updateScreen() {
+    const paddedBounds = map.getBounds().pad(0.5); 
+    const bbox = [
+        Math.max(-180, paddedBounds.getWest()), Math.max(-90, paddedBounds.getSouth()), 
+        Math.min(180, paddedBounds.getEast()), Math.min(90, paddedBounds.getNorth())
+    ];
+    
+    const visibleClusters = await askWorker('getClusters', { bbox, zoom: map.getZoom() });
+    markersLayer.clearLayers(); 
+
+    visibleClusters.forEach(feature => {
+        const [lon, lat] = feature.geometry.coordinates;
+        
+        if (feature.properties.cluster) {
+            const count = feature.properties.point_count;
+            let sizeClass = count < 50 ? 'small' : count < 500 ? 'medium' : 'large';
+            
+            const clusterIcon = L.divIcon({
+                html: `<div><span>${count}</span></div>`, className: `marker-cluster marker-cluster-${sizeClass}`,
+                iconSize: L.point(40, 40)
+            });
+            
+            const clusterMarker = L.marker([lat, lon], { icon: clusterIcon });
+            clusterMarker.clusterId = feature.properties.cluster_id; 
+            markersLayer.addLayer(clusterMarker);
+        } else {
+            const isDark = document.body.classList.contains('dark-mode');
+            const personMarker = L.circleMarker([lat, lon], { 
+                radius: 6, fillColor: isDark ? '#fbbf24' : '#1e40af', 
+                color: isDark ? '#111827' : '#ffffff', weight: 2, fillOpacity: 1
+            });
+
+            personMarker.personData = feature.properties;
+            personMarker.bindPopup((layer) => generatePopupHTML(layer.personData));
+            markersLayer.addLayer(personMarker);
+        }
+    });
+}
+
+let renderTimer;
+map.on('moveend', () => {
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(updateScreen, 50); 
+});
+
+map.on('click', (e) => {
+    if (!e.originalEvent.target.closest('.leaflet-marker-icon') && !e.originalEvent.target.closest('.leaflet-popup')) {
+        closeAllPanels(map);
+    }
+});
+
+markersLayer.on('click', async function(e) {
+    const marker = e.layer;
+    if (!marker.clusterId) return;
+
+    const clusterId = marker.clusterId;
+    const expansionZoom = await askWorker('getClusterExpansionZoom', { clusterId });
+    
+    if (expansionZoom > 19) {
+        const leaves = await askWorker('getLeaves', { clusterId, limit: Infinity }); 
+        const listContent = document.getElementById('list-content');
+        const panel = document.getElementById('cluster-list-panel');
+        
+        const firstDetails = state.peopleDetails[leaves[0].properties.id] || {};
+        document.getElementById('panel-title').innerText = firstDetails.birthplace || "Location";
+        document.getElementById('panel-subtitle').innerText = `${leaves.length} People Here`;
+        listContent.innerHTML = '';
+        
+        leaves.forEach(leaf => {
+            const basicData = leaf.properties;
+            const details = state.peopleDetails[basicData.id] || {};
+            const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
+
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${basicData.topic}</div>`;
+            
+            item.onclick = () => {
+                document.getElementById('detail-name').innerText = displayName;
+                const detailContent = document.getElementById('detail-content');
+                detailContent.innerHTML = generatePopupHTML(basicData); 
+                if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
+                document.getElementById('person-detail-panel').classList.add('open');
+                
+                map.flyTo([leaf.geometry.coordinates[1], leaf.geometry.coordinates[0]], map.getMaxZoom(), { paddingTopLeft: [820, 0], duration: 0.8 });
+            };
+            listContent.appendChild(item);
+        });
+        panel.classList.add('open');
+    } else {
+        map.flyTo(marker.getLatLng(), expansionZoom, { duration: 0.5 });
+    }
+});
