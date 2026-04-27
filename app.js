@@ -41,23 +41,36 @@ document.addEventListener('DOMContentLoaded', function() {
         attribution: '© OpenStreetMap contributors, © CARTO'
     }).addTo(map);
 
-    // Initialize Supercluster
-    const clusterIndex = new Supercluster({
-        radius: 150,       
-        maxZoom: 19,      
-        minPoints: 2      
-    });
-
-    // FIX 1: Use FeatureGroup so click events successfully bubble up!
     const markersLayer = L.featureGroup().addTo(map);
+
+    // Initialize Web Worker for Background Math!
+    const clusterWorker = new Worker('worker.js');
+    let workerMessageId = 0;
+    const workerCallbacks = {};
+
+    clusterWorker.onmessage = function(e) {
+        const { id, result } = e.data;
+        if (workerCallbacks[id]) {
+            workerCallbacks[id](result);
+            delete workerCallbacks[id];
+        }
+    };
+
+    // Helper function to talk to the worker asynchronously
+    function askWorker(type, payload) {
+        return new Promise(resolve => {
+            const id = workerMessageId++;
+            workerCallbacks[id] = resolve;
+            clusterWorker.postMessage({ type, payload, id });
+        });
+    }
     
     // ==========================================
-    // 3. CORE RENDERING ENGINE (SUPERCLUSTER)
+    // 3. CORE RENDERING ENGINE (WEB WORKER)
     // ==========================================
-    function renderMarkers() {
+    async function renderMarkers() {
         const mainTopic = mainFilter.value;
         const subTopic = subFilter.value;
-        
         const geoJsonData = [];
         
         allPeople.forEach(person => {
@@ -73,25 +86,28 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        clusterIndex.load(geoJsonData);
+        // Send data to the background worker
+        await askWorker('load', { geoJsonData });
         updateScreen();
     }
 
-    function updateScreen() {
-        markersLayer.clearLayers(); 
+    async function updateScreen() {
+        // Expand the bounds by 50% to render markers "off-screen"
+        const paddedBounds = map.getBounds().pad(0.5); 
         
-        const bounds = map.getBounds();
-        
-        // FIX 3: Clamp the bounding box to pure Earth coordinates to prevent math crashes
         const bbox = [
-            Math.max(-180, bounds.getWest()), 
-            Math.max(-90, bounds.getSouth()), 
-            Math.min(180, bounds.getEast()), 
-            Math.min(90, bounds.getNorth())
+            Math.max(-180, paddedBounds.getWest()), 
+            Math.max(-90, paddedBounds.getSouth()), 
+            Math.min(180, paddedBounds.getEast()), 
+            Math.min(90, paddedBounds.getNorth())
         ];
         const zoom = map.getZoom();
 
-        const visibleClusters = clusterIndex.getClusters(bbox, zoom);
+        // Ask the worker for clusters (Wait for it...)
+        const visibleClusters = await askWorker('getClusters', { bbox, zoom });
+
+        // Once the worker responds, wipe screen and draw!
+        markersLayer.clearLayers(); 
 
         visibleClusters.forEach(feature => {
             const [lon, lat] = feature.geometry.coordinates;
@@ -113,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 // IT IS A SINGLE PERSON (Optimized for Canvas)
                 const isDark = document.body.classList.contains('dark-mode');
-                
                 const personMarker = L.circleMarker([lat, lon], { 
                     radius: 6,
                     fillColor: isDark ? '#fbbf24' : '#1e40af', 
@@ -123,23 +138,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 personMarker.personData = feature.properties;
-                
                 personMarker.bindPopup((layer) => generatePopupHTML(layer.personData));
-                
-                personMarker.on('click', (e) => {
-                    // Note: Canvas circles don't use CSS animations well, 
-                    // but they load infinitely faster!
-                });
-                
                 markersLayer.addLayer(personMarker);
             }
         });
     }
 
+    // Debounce the camera to keep things smooth
     let renderTimer;
     map.on('moveend', () => {
         clearTimeout(renderTimer);
-        renderTimer = setTimeout(updateScreen, 50); // 50ms delay smooths out rapid panning
+        renderTimer = setTimeout(updateScreen, 50); 
     });
 
     // ==========================================
@@ -214,15 +223,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==========================================
     // 5. CLUSTER & PANEL INTERACTION
     // ==========================================
-    markersLayer.on('click', function(e) {
+    markersLayer.on('click', async function(e) {
         const marker = e.layer;
         
         if (marker.clusterId) {
             const clusterId = marker.clusterId;
-            const expansionZoom = clusterIndex.getClusterExpansionZoom(clusterId);
             
-            if (expansionZoom > clusterIndex.options.maxZoom) {
-                const leaves = clusterIndex.getLeaves(clusterId, Infinity); 
+            // Ask worker for expansion zoom
+            const expansionZoom = await askWorker('getClusterExpansionZoom', { clusterId });
+            
+            if (expansionZoom > 19) {
+                // Ask worker for the leaves
+                const leaves = await askWorker('getLeaves', { clusterId, limit: Infinity }); 
+                
                 const listContent = document.getElementById('list-content');
                 const panel = document.getElementById('cluster-list-panel');
                 
@@ -265,12 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // FIX 4: Replaced duplicate click listeners with a single, clean handler
     map.on('click', (e) => {
-        // Close popups and pulses natively
-        document.querySelectorAll('.active-pulse').forEach(el => el.classList.remove('active-pulse'));
-        
-        // Only close side-panels if clicking on pure gray map space (not a marker)
         if (!e.originalEvent.target.closest('.leaflet-marker-icon') && !e.originalEvent.target.closest('.leaflet-popup')) {
             closeAllPanels();
         }
