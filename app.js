@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const subTopicsMap = {};
     let allPeople = []; 
     let peopleDetails = {};
+    let searchIndex = { locations: {}, people: [] }; // <-- ADD THIS
     let topicCounts = { main: {}, sub: {} };
 
     const mainFilter = document.getElementById('topic-filter');
@@ -221,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 4.5 SEARCH BAR LOGIC
+    // 4.5 SEARCH BAR LOGIC (OPTIMIZED & LOCATION AWARE)
     // ==========================================
     const searchInput = document.getElementById('search-input');
     const searchResults = document.getElementById('search-results');
@@ -230,60 +231,123 @@ document.addEventListener('DOMContentLoaded', function() {
         const query = e.target.value.toLowerCase().trim();
         searchResults.innerHTML = '';
 
-        // Only start searching if they typed at least 2 letters
         if (query.length < 2) {
             searchResults.style.display = 'none';
             return;
         }
 
-        let matches = [];
-        
-        // Loop through our heavy details dictionary
-        for (const [id, details] of Object.entries(peopleDetails)) {
-            const nameEn = (details.name_en || "").toLowerCase();
-            const nameUk = (details.name_uk || "").toLowerCase();
-            const nameRu = (details.name_ru || "").toLowerCase();
+        // 1. Search Locations First (Max 3 results)
+        const locationMatches = Object.keys(searchIndex.locations)
+            .filter(loc => loc.toLowerCase().includes(query))
+            .slice(0, 3);
 
-            // Check if the query matches English, Ukrainian, or Russian names
-            if (nameEn.includes(query) || nameUk.includes(query) || nameRu.includes(query)) {
-                matches.push({ id, details });
-                // Limit to 10 results so the UI doesn't freeze when typing "Ivan"
-                if (matches.length >= 10) break; 
-            }
-        }
+        // 2. Search People (Max 7 results)
+        // p[1] is our pre-lowercased mashup of all 3 languages!
+        const peopleMatches = searchIndex.people
+            .filter(p => p[1].includes(query))
+            .slice(0, 7);
 
-        if (matches.length > 0) {
-            matches.forEach(match => {
-                const displayName = match.details.name_en || match.details.name_uk || match.details.name_ru || "Unknown Name";
+        if (locationMatches.length > 0 || peopleMatches.length > 0) {
+            
+            // Render Location Results
+            locationMatches.forEach(loc => {
                 const div = document.createElement('div');
                 div.className = 'search-result-item';
-                div.innerHTML = `<strong>${displayName}</strong> <span style="font-size:0.8em; color:gray;">(${match.details.birthplace || 'Unknown'})</span>`;
+                div.innerHTML = `📍 <strong>${loc}</strong> <span style="font-size:0.8em; color:gray;">(Location)</span>`;
                 
                 div.onclick = () => {
-                    // Hide the dropdown menu
+                    searchResults.style.display = 'none';
+                    searchInput.value = loc;
+                    closeAllPanels(); 
+                    
+                    const [lat, lon] = searchIndex.locations[loc];
+                    
+                    // Fly to location, but shift the camera right to make room for the side panel!
+                    map.flyTo([lat, lon], 12, { 
+                        paddingTopLeft: [350, 0], 
+                        duration: 1.0 
+                    });
+
+                    // 1. Instantly find all people born in this exact location
+                    const peopleInLocation = searchIndex.people.filter(p => p[3] === loc);
+                    
+                    // 2. Grab the panel elements
+                    const listContent = document.getElementById('list-content');
+                    const panel = document.getElementById('cluster-list-panel');
+                    
+                    document.getElementById('panel-title').innerText = loc;
+                    document.getElementById('panel-subtitle').innerText = `${peopleInLocation.length} People Here`;
+                    listContent.innerHTML = '';
+                    
+                    // 3. Build the list of names
+                    peopleInLocation.forEach(pMatch => {
+                        const [pId, searchString, displayName, birthplace] = pMatch;
+                        
+                        // Look up their basic category data from our active map array
+                        const personData = allPeople.find(p => p[0] === pId);
+                        if (!personData) return;
+                        
+                        const [id, pLat, pLon, pTopic, pSubTopic] = personData;
+                        const basicData = { id: id, topic: pTopic, sub_topic: pSubTopic };
+
+                        const item = document.createElement('div');
+                        item.className = 'list-item';
+                        item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${pTopic}</div>`;
+                        
+                        // Make clicking a name inside the panel open their profile
+                        item.onclick = () => {
+                            const detailPanel = document.getElementById('person-detail-panel');
+                            const detailContent = document.getElementById('detail-content');
+                            
+                            document.getElementById('detail-name').innerText = displayName;
+                            detailContent.innerHTML = generatePopupHTML(basicData); 
+                            if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
+
+                            detailPanel.classList.add('open');
+                            
+                            map.flyTo([pLat, pLon], map.getMaxZoom(), {
+                                paddingTopLeft: [820, 0],
+                                duration: 0.8
+                            });
+                        };
+                        listContent.appendChild(item);
+                    });
+                    
+                    // 4. Slide the panel open!
+                    panel.classList.add('open');
+                };
+                searchResults.appendChild(div);
+            });
+
+            // Render People Results
+            peopleMatches.forEach(person => {
+                const [pId, searchString, displayName, birthplace] = person;
+                
+                const div = document.createElement('div');
+                div.className = 'search-result-item';
+                div.innerHTML = `👤 <strong>${displayName}</strong> <span style="font-size:0.8em; color:gray;">(${birthplace})</span>`;
+                
+                div.onclick = () => {
                     searchResults.style.display = 'none';
                     searchInput.value = displayName;
 
-                    // Search our lightweight array to find their coordinates!
-                    // allPeople format: [id, lat, lon, topic, sub_topic]
-                    const personData = allPeople.find(p => p[0] === match.id);
+                    // Find coordinates in our active map arrays
+                    const personData = allPeople.find(p => p[0] === pId);
                     
                     if (personData) {
-                        const [pId, pLat, pLon, pTopic, pSubTopic] = personData;
+                        const [id, pLat, pLon, pTopic, pSubTopic] = personData;
                         
-                        // Fly the map to their exact location
                         map.flyTo([pLat, pLon], map.getMaxZoom(), { 
-                            paddingTopLeft: [820, 0], // Leave room for side panel
+                            paddingTopLeft: [820, 0], 
                             duration: 1.0 
                         });
 
-                        // Manually open their detail panel
                         const detailPanel = document.getElementById('person-detail-panel');
                         const detailContent = document.getElementById('detail-content');
                         
                         document.getElementById('detail-name').innerText = displayName;
                         
-                        const basicData = { id: pId, topic: pTopic, sub_topic: pSubTopic };
+                        const basicData = { id: id, topic: pTopic, sub_topic: pSubTopic };
                         detailContent.innerHTML = generatePopupHTML(basicData);
                         if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
 
@@ -292,6 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 searchResults.appendChild(div);
             });
+
             searchResults.style.display = 'block';
         } else {
             searchResults.innerHTML = '<div class="search-result-item" style="color:gray; cursor:default;">No results found...</div>';
@@ -299,7 +364,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Close the search dropdown if the user clicks anywhere else on the screen
     document.addEventListener('click', function(e) {
         if (!document.getElementById('search-container').contains(e.target)) {
             searchResults.style.display = 'none';
@@ -421,12 +485,18 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDropdownCounts(); 
         renderMarkers(); 
 
-        fetch('data/people_details.json')
-            .then(res => res.json())
-            .then(detailsData => {
-                peopleDetails = detailsData;
-                console.log("Heavy details loaded in background.");
-            });
+        // NEW: Background load BOTH the heavy text and the search index!
+        Promise.all([
+            fetch('data/people_details.json').then(res => res.json()),
+            fetch('data/search_index.json').then(res => res.json())
+        ])
+        .then(([detailsData, searchData]) => {
+            peopleDetails = detailsData;
+            searchIndex = searchData; // Save the search index to our new variable
+            console.log("Background data and search index fully loaded!");
+        })
+        .catch(err => console.error("Error loading background data:", err));
+        
     })
     .catch(err => console.error("Error loading JSON data:", err));
 
