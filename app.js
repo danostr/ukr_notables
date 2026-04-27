@@ -136,7 +136,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    map.on('moveend', updateScreen);
+    let renderTimer;
+    map.on('moveend', () => {
+        clearTimeout(renderTimer);
+        renderTimer = setTimeout(updateScreen, 50); // 50ms delay smooths out rapid panning
+    });
 
     // ==========================================
     // 4. EVENT LISTENERS & UI LOGIC
