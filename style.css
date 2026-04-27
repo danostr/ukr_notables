@@ -411,3 +411,60 @@ body.dark-mode .leaflet-control-attribution a:hover {
     color: #f59e0b !important; /* Slightly darker orange-yellow on hover */
     text-decoration: underline;
 }
+
+/* ==========================================
+   8. SEARCH PANEL
+   ========================================== */
+#search-container {
+    position: absolute;
+    top: 20px;
+    right: 270px;
+    width: 400px;
+    max-width: 90vw; /* Keeps it responsive on mobile */
+    z-index: 1000;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+#search-input {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 12px;
+    outline: none;
+    background: transparent;
+    color: #334155;
+    box-sizing: border-box;
+    font-weight: 500;
+}
+
+#search-results {
+    max-height: 350px;
+    overflow-y: auto;
+    display: none; /* Hidden until the user types */
+    border-top: 1px solid #e2e8f0;
+}
+
+.search-result-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+}
+
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: #f8fafc; }
+
+/* Dark Mode Overrides */
+body.dark-mode #search-container { background: #1f2937; border-color: #374151; }
+body.dark-mode #search-input { color: #f3f4f6; }
+body.dark-mode #search-input::placeholder { color: #9ca3af; }
+body.dark-mode #search-results { border-top-color: #374151; }
+body.dark-mode .search-result-item { border-bottom-color: #374151; color: #d1d5db; }
+body.dark-mode .search-result-item:hover { background: #374151; }

@@ -221,6 +221,92 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
+    // 4.5 SEARCH BAR LOGIC
+    // ==========================================
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+
+    searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        searchResults.innerHTML = '';
+
+        // Only start searching if they typed at least 2 letters
+        if (query.length < 2) {
+            searchResults.style.display = 'none';
+            return;
+        }
+
+        let matches = [];
+        
+        // Loop through our heavy details dictionary
+        for (const [id, details] of Object.entries(peopleDetails)) {
+            const nameEn = (details.name_en || "").toLowerCase();
+            const nameUk = (details.name_uk || "").toLowerCase();
+            const nameRu = (details.name_ru || "").toLowerCase();
+
+            // Check if the query matches English, Ukrainian, or Russian names
+            if (nameEn.includes(query) || nameUk.includes(query) || nameRu.includes(query)) {
+                matches.push({ id, details });
+                // Limit to 10 results so the UI doesn't freeze when typing "Ivan"
+                if (matches.length >= 10) break; 
+            }
+        }
+
+        if (matches.length > 0) {
+            matches.forEach(match => {
+                const displayName = match.details.name_en || match.details.name_uk || match.details.name_ru || "Unknown Name";
+                const div = document.createElement('div');
+                div.className = 'search-result-item';
+                div.innerHTML = `<strong>${displayName}</strong> <span style="font-size:0.8em; color:gray;">(${match.details.birthplace || 'Unknown'})</span>`;
+                
+                div.onclick = () => {
+                    // Hide the dropdown menu
+                    searchResults.style.display = 'none';
+                    searchInput.value = displayName;
+
+                    // Search our lightweight array to find their coordinates!
+                    // allPeople format: [id, lat, lon, topic, sub_topic]
+                    const personData = allPeople.find(p => p[0] === match.id);
+                    
+                    if (personData) {
+                        const [pId, pLat, pLon, pTopic, pSubTopic] = personData;
+                        
+                        // Fly the map to their exact location
+                        map.flyTo([pLat, pLon], map.getMaxZoom(), { 
+                            paddingTopLeft: [820, 0], // Leave room for side panel
+                            duration: 1.0 
+                        });
+
+                        // Manually open their detail panel
+                        const detailPanel = document.getElementById('person-detail-panel');
+                        const detailContent = document.getElementById('detail-content');
+                        
+                        document.getElementById('detail-name').innerText = displayName;
+                        
+                        const basicData = { id: pId, topic: pTopic, sub_topic: pSubTopic };
+                        detailContent.innerHTML = generatePopupHTML(basicData);
+                        if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
+
+                        detailPanel.classList.add('open');
+                    }
+                };
+                searchResults.appendChild(div);
+            });
+            searchResults.style.display = 'block';
+        } else {
+            searchResults.innerHTML = '<div class="search-result-item" style="color:gray; cursor:default;">No results found...</div>';
+            searchResults.style.display = 'block';
+        }
+    });
+
+    // Close the search dropdown if the user clicks anywhere else on the screen
+    document.addEventListener('click', function(e) {
+        if (!document.getElementById('search-container').contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+
+    // ==========================================
     // 5. CLUSTER & PANEL INTERACTION
     // ==========================================
     markersLayer.on('click', async function(e) {
