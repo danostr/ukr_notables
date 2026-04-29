@@ -1,7 +1,7 @@
 // search.js
 import { state } from './state.js';
 import { map, renderMarkers } from './map.js';
-import { closeAllPanels, generatePopupHTML } from './ui.js';
+import { closeAllPanels, generatePopupHTML, resetPanelControls } from './ui.js'; // <-- Added here!
 
 export function initSearch() {
     const searchInput = document.getElementById('search-input');

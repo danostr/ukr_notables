@@ -129,5 +129,42 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.active-pulse').forEach(el => el.classList.remove('active-pulse'));
         }
     });
+    // 5. Side Panel Search & Sort Logic
+    const panelSearch = document.getElementById('panel-search');
+    const panelSort = document.getElementById('panel-sort');
+
+    if (panelSearch && panelSort) {
+        // The Search Bar Filter
+        panelSearch.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            document.querySelectorAll('#list-content .list-item').forEach(item => {
+                const name = item.getAttribute('data-name') || '';
+                // If the name matches the typing, show it, otherwise hide it
+                item.style.display = name.includes(query) ? 'block' : 'none'; 
+            });
+        });
+
+        // The Sort Dropdown
+        panelSort.addEventListener('change', (e) => {
+            const sortType = e.target.value;
+            const listContent = document.getElementById('list-content');
+            
+            // Grab all current HTML elements and convert to a sortable array
+            const items = Array.from(listContent.querySelectorAll('.list-item'));
+
+            items.sort((a, b) => {
+                if (sortType === 'alpha') {
+                    return a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'));
+                } else if (sortType === 'remarkability') {
+                    // Placeholder: Will sort high to low once we inject real remarkability data!
+                    return parseInt(b.getAttribute('data-remark')) - parseInt(a.getAttribute('data-remark'));
+                }
+                return 0;
+            });
+
+            // Re-appending them automatically forces the browser to draw them in the new sorted order
+            items.forEach(item => listContent.appendChild(item));
+        });
+    }
 
 }); // <-- End of main.js DOMContentLoaded block

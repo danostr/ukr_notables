@@ -90,3 +90,16 @@ export function handleEscape(mapInstance) {
     // Layer 3: Otherwise, close any open map popups.
     if (mapInstance) mapInstance.closePopup();
 }
+
+export function resetPanelControls() {
+    const search = document.getElementById('panel-search');
+    const sort = document.getElementById('panel-sort');
+    
+    if (search) search.value = '';
+    
+    if (sort) {
+        sort.value = 'alpha';
+        // This instantly triggers the sorting math so the list is alphabetical by default!
+        sort.dispatchEvent(new Event('change')); 
+    }
+}

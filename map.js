@@ -1,6 +1,6 @@
 // map.js
 import { state } from './state.js';
-import { generatePopupHTML, closeAllPanels } from './ui.js';
+import { generatePopupHTML, closeAllPanels, resetPanelControls } from './ui.js'; // <-- Added here!
 
 const globeBounds = L.latLngBounds(L.latLng(-75, -200), L.latLng(85, 200));
 
@@ -137,6 +137,11 @@ markersLayer.on('click', async function(e) {
 
             const item = document.createElement('div');
             item.className = 'list-item';
+                    
+            // --- ADD THESE TWO LINES ---
+            item.setAttribute('data-name', displayName.toLowerCase());
+            item.setAttribute('data-remark', '0'); // Placeholder for next step!
+
             item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${basicData.topic}</div>`;
             
             item.onclick = () => {
@@ -150,6 +155,7 @@ markersLayer.on('click', async function(e) {
             };
             listContent.appendChild(item);
         });
+        resetPanelControls();
         panel.classList.add('open');
     } else {
         map.flyTo(marker.getLatLng(), expansionZoom, { duration: 0.5 });

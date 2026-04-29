@@ -21,6 +21,14 @@
             </div>
             <div id="panel-subtitle" style="font-size: 0.85em; opacity: 0.9; margin-top: 4px;">0 People Here</div>
         </div>
+        <div class="panel-controls" style="padding: 10px 15px; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; gap: 8px;">
+            <input type="text" id="panel-search" placeholder="Search people here..." style="flex: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px;">
+            <select id="panel-sort" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
+                <option value="alpha">Alphabetical</option>
+                <option value="remarkability">Remarkability</option>
+            </select>
+        </div>
+
         <div id="list-content"></div>
     </div>
 
