@@ -16,10 +16,10 @@ export function generatePopupHTML(basicData) {
 
     const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
 
-    // Format all assigned categories cleanly
-    const categoriesHTML = basicData.categories.map(c => 
-        `<span class="popup-category" style="display:inline-block; margin-bottom:4px;">${c[0]}${c[1] !== 'Unknown' ? ` > ${c[1]}` : ''}</span>`
-    ).join(' ');
+    // Format ONLY the first assigned category cleanly
+    const firstCategory = (basicData.categories && basicData.categories.length > 0) ? basicData.categories[0] : ["Other", "Unknown"];
+    
+    const categoriesHTML = `<span class="popup-category" style="display:inline-block; margin-bottom:4px;">${firstCategory[0]}${firstCategory[1] !== 'Unknown' ? ` > ${firstCategory[1]}` : ''}</span>`;
 
     return `
         <div class="popup-container">

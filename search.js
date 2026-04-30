@@ -113,7 +113,10 @@ export function initSearch() {
                     peopleInZone.forEach(person => {
                         const pId = person[0];
                         const categories = person[3]; // Grab the multi-category array
-                        const mainTopics = Array.from(new Set(categories.map(c => c[0]))).join(', ');
+                        // Replace the old Array.from(new Set(...)) line with this:
+                        const primaryTopic = (categories && categories.length > 0) ? categories[0][0] : "Other";
+                        
+                        
                         
                         const details = state.peopleDetails[pId] || {};
                         const displayName = getLocalizedName(details, query, "Unknown Name");
@@ -123,8 +126,8 @@ export function initSearch() {
                         item.setAttribute('data-name', displayName.toLowerCase());
                         item.setAttribute('data-remark', details.remarkability || 0); 
 
-                        // Use mainTopics here!
-                        item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${mainTopics}</div>`;
+                        // ... then update the innerHTML below it:
+                        item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${primaryTopic}</div>`;
                         
                         item.onclick = () => {
                             document.getElementById('detail-name').innerText = displayName;
@@ -175,7 +178,7 @@ export function initSearch() {
                         
                         // Extract array perfectly matching map_lite.json
                         const [id, pLat, pLon, categories] = personData;
-                        const mainTopics = Array.from(new Set(categories.map(c => c[0]))).join(', ');
+                        const primaryTopic = (categories && categories.length > 0) ? categories[0][0] : "Other";
                         const basicData = { id: id, categories: categories };
 
                         const item = document.createElement('div');
@@ -183,7 +186,7 @@ export function initSearch() {
                         item.setAttribute('data-name', displayName.toLowerCase());
                         item.setAttribute('data-remark', details.remarkability || 0);
 
-                        item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${mainTopics}</div>`;
+                        item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${primaryTopic}</div>`;
                         
                         item.onclick = () => {
                             document.getElementById('detail-name').innerText = displayName;

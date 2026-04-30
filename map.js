@@ -165,9 +165,10 @@ markersLayer.on('click', async function(e) {
             item.setAttribute('data-remark', details.remarkability || 0); 
 
             // Extract just the unique main topics to show under their name in the side panel
-            const mainTopics = Array.from(new Set(basicData.categories.map(c => c[0]))).join(', ');
+            // Extract just the FIRST main topic to show under their name in the side panel
+            const primaryTopic = (basicData.categories && basicData.categories.length > 0) ? basicData.categories[0][0] : "Other";
 
-            item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${mainTopics}</div>`;
+            item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${primaryTopic}</div>`;
             
             item.onclick = () => {
                 document.getElementById('detail-name').innerText = displayName;
