@@ -42,18 +42,38 @@ export async function renderMarkers() {
     const geoJsonData = [];
     
     state.allPeople.forEach(person => {
-        const pId = person[0], pLat = person[1], pLon = person[2], 
-              pTopic = person[3], pSubTopic = person[4], 
-              geoTree = person[6] || []; // Grab the new tree array!
+        const pId = person[0], pLat = person[1], pLon = person[2];
+        let categories = person[3];
+        let geoTree = person[5] || []; 
 
-        if (mainTopic !== 'all' && pTopic !== mainTopic) return;
-        if (mainTopic !== 'all' && subTopic && subTopic !== 'All' && pSubTopic !== subTopic) return;
-        
-        // Zone filtering now checks if the selected zone is anywhere inside the geographic tree
+        // --- DEFENSIVE DATA FIX ---
+        // If the browser cached the old format (string), seamlessly upgrade it so the app doesn't crash!
+        if (typeof categories === 'string') {
+            categories = [[categories, person[4] || 'Unknown']];
+            geoTree = person[6] || []; // Old data had geoTree at index 6!
+        } else if (!categories) {
+            categories = [["Other", "Unknown"]];
+        }
+
+        let matchesTopic = false;
+        if (mainTopic === 'all') {
+            matchesTopic = true;
+        } else {
+            // ... rest of your code stays exactly the same ...
+            if (subTopic && subTopic !== 'All') {
+                // Must match the EXACT main/sub combination somewhere in their arrays
+                matchesTopic = categories.some(c => c[0] === mainTopic && c[1] === subTopic);
+            } else {
+                // Must match the main topic anywhere in their arrays
+                matchesTopic = categories.some(c => c[0] === mainTopic);
+            }
+        }
+
+        if (!matchesTopic) return;
         if (state.activeZoneFilter !== 'all' && !geoTree.includes(state.activeZoneFilter)) return;
 
         geoJsonData.push({
-            type: "Feature", properties: { id: pId, topic: pTopic, sub_topic: pSubTopic },
+            type: "Feature", properties: { id: pId, categories: categories },
             geometry: { type: "Point", coordinates: [pLon, pLat] } 
         });
     });
@@ -133,27 +153,28 @@ markersLayer.on('click', async function(e) {
         leaves.forEach(leaf => {
             const basicData = leaf.properties;
             const details = state.peopleDetails[basicData.id] || {};
+            
+            // 1. Define the name FIRST
+            const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
+
             const item = document.createElement('div');
             item.className = 'list-item';
             
-            // Set the real remarkability score from our new JSON data
+            // 2. Set attributes AFTER the variables are defined
             item.setAttribute('data-name', displayName.toLowerCase());
-            item.setAttribute('data-remark', details.remarkability || 0); // <-- UPDATED
+            item.setAttribute('data-remark', details.remarkability || 0); 
 
-            item.innerHTML = `<div><strong>${displayName}</strong></div>...`;
-            const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
+            // Extract just the unique main topics to show under their name in the side panel
+            const mainTopics = Array.from(new Set(basicData.categories.map(c => c[0]))).join(', ');
 
-                    
-            // --- ADD THESE TWO LINES ---
-            item.setAttribute('data-name', displayName.toLowerCase());
-            item.setAttribute('data-remark', '0'); // Placeholder for next step!
-
-            item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${basicData.topic}</div>`;
+            item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${mainTopics}</div>`;
             
             item.onclick = () => {
                 document.getElementById('detail-name').innerText = displayName;
                 const detailContent = document.getElementById('detail-content');
-                detailContent.innerHTML = generatePopupHTML(basicData); 
+                // Pass the arrays to the popup generator
+                const popupData = { id: basicData.id, categories: basicData.categories };
+                detailContent.innerHTML = generatePopupHTML(popupData);
                 if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
                 document.getElementById('person-detail-panel').classList.add('open');
                 

@@ -98,7 +98,7 @@ export function initSearch() {
                     state.activeZoneFilter = zone;
                     renderMarkers(); 
 
-                    const peopleInZone = state.allPeople.filter(p => (p[6] || []).includes(zone));
+                    const peopleInZone = state.allPeople.filter(p => (p[5] || []).includes(zone));
                     if (peopleInZone.length === 0) return;
 
                     const bounds = L.latLngBounds();
@@ -111,22 +111,27 @@ export function initSearch() {
                     listContent.innerHTML = '';
                     
                     peopleInZone.forEach(person => {
-                        const details = state.peopleDetails[basicData.id] || {};
-                        const item = document.createElement('div');
-                        item.className = 'list-item';
+                        const pId = person[0];
+                        const categories = person[3]; // Grab the multi-category array
+                        const mainTopics = Array.from(new Set(categories.map(c => c[0]))).join(', ');
                         
-                        // Set the real remarkability score from our new JSON data
-                        item.setAttribute('data-name', displayName.toLowerCase());
-                        item.setAttribute('data-remark', details.remarkability || 0); // <-- UPDATED
-
+                        const details = state.peopleDetails[pId] || {};
                         const displayName = getLocalizedName(details, query, "Unknown Name");
 
-                        item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${person[3]}</div>`;
+                        const item = document.createElement('div');
+                        item.className = 'list-item';
+                        item.setAttribute('data-name', displayName.toLowerCase());
+                        item.setAttribute('data-remark', details.remarkability || 0); 
+
+                        // Use mainTopics here!
+                        item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${mainTopics}</div>`;
                         
                         item.onclick = () => {
                             document.getElementById('detail-name').innerText = displayName;
                             const detailContent = document.getElementById('detail-content');
-                            const basicData = { id: person[0], topic: person[3], sub_topic: person[4] };
+                            
+                            // Pass categories to the popup!
+                            const basicData = { id: pId, categories: categories };
                             detailContent.innerHTML = generatePopupHTML(basicData); 
                             if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
                             document.getElementById('person-detail-panel').classList.add('open');
@@ -162,22 +167,23 @@ export function initSearch() {
                     
                     peopleInLocation.forEach(pMatch => {
                         const pId = pMatch[0];
-                        const details = state.peopleDetails[pId];
-                        // Dynamically translate names in the side panel!
+                        const details = state.peopleDetails[pId] || {};
                         const displayName = getLocalizedName(details, query, "Unknown Name");
 
                         const personData = state.allPeople.find(p => p[0] === pId);
                         if (!personData) return;
                         
-                        const [id, pLat, pLon, pTopic, pSubTopic] = personData;
-                        const basicData = { id: id, topic: pTopic, sub_topic: pSubTopic };
+                        // Extract array perfectly matching map_lite.json
+                        const [id, pLat, pLon, categories] = personData;
+                        const mainTopics = Array.from(new Set(categories.map(c => c[0]))).join(', ');
+                        const basicData = { id: id, categories: categories };
 
                         const item = document.createElement('div');
                         item.className = 'list-item';
                         item.setAttribute('data-name', displayName.toLowerCase());
-                        item.setAttribute('data-remark', '0');
+                        item.setAttribute('data-remark', details.remarkability || 0);
 
-                        item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${pTopic}</div>`;
+                        item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${mainTopics}</div>`;
                         
                         item.onclick = () => {
                             document.getElementById('detail-name').innerText = displayName;
@@ -218,12 +224,14 @@ export function initSearch() {
 
                     const personData = state.allPeople.find(p => p[0] === pId);
                     if (personData) {
-                        const [id, pLat, pLon, pTopic, pSubTopic] = personData;
+                        const [id, pLat, pLon, categories] = personData;
                         map.flyTo([pLat, pLon], map.getMaxZoom(), { paddingTopLeft: [820, 0], duration: 1.0 });
 
                         document.getElementById('detail-name').innerText = displayName;
                         const detailContent = document.getElementById('detail-content');
-                        const basicData = { id: id, topic: pTopic, sub_topic: pSubTopic };
+                        
+                        // Pass the categories properly
+                        const basicData = { id: id, categories: categories };
                         detailContent.innerHTML = generatePopupHTML(basicData);
                         if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
 

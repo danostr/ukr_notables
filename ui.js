@@ -3,7 +3,6 @@ import { state } from './state.js';
 
 export function generatePopupHTML(basicData) {
     const details = state.peopleDetails[basicData.id];
-    
     if (!details) return `<div class="popup-container"><p>Loading details...</p></div>`;
 
     let wikiButtonsHTML = `<div class="wiki-button-container">`;
@@ -12,18 +11,22 @@ export function generatePopupHTML(basicData) {
     if (details.wiki_ru) wikiButtonsHTML += `<a href="${details.wiki_ru}" target="_blank" class="wiki-btn btn-ru">RU</a>`;
     wikiButtonsHTML += `</div>`;
 
-    const subTopicText = (basicData.sub_topic && basicData.sub_topic !== 'Unknown') ? ` > ${basicData.sub_topic}` : '';
     const occupationsHTML = (details.occupations && details.occupations.length > 0) 
         ? `<p class="popup-detail"><b>Occupation:</b> ${details.occupations.join(', ')}</p>` : '';
 
     const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
+
+    // Format all assigned categories cleanly
+    const categoriesHTML = basicData.categories.map(c => 
+        `<span class="popup-category" style="display:inline-block; margin-bottom:4px;">${c[0]}${c[1] !== 'Unknown' ? ` > ${c[1]}` : ''}</span>`
+    ).join(' ');
 
     return `
         <div class="popup-container">
             <h3 class="popup-title">${displayName}</h3>
             <div class="popup-body">
                 <p class="popup-detail"><b>Birthplace:</b> ${details.birthplace || 'Unknown'}</p>
-                <p class="popup-detail"><b>Category:</b> <span class="popup-category">${basicData.topic}${subTopicText}</span></p>
+                <div style="margin-bottom: 8px;">${categoriesHTML}</div>
                 ${occupationsHTML}
                 ${wikiButtonsHTML}
             </div>
@@ -48,12 +51,31 @@ export function updateDropdownCounts(mainFilter) {
 
     state.allPeople.forEach(person => {
         totalPeople++;
-        const mainTopic = person[3] || 'Other';
-        const subTopic = person[4] || 'Unknown';
+        let categories = person[3];
 
-        state.topicCounts.main[mainTopic] = (state.topicCounts.main[mainTopic] || 0) + 1;
-        const subKey = `${mainTopic}|${subTopic}`;
-        state.topicCounts.sub[subKey] = (state.topicCounts.sub[subKey] || 0) + 1;
+        // --- DEFENSIVE DATA FIX ---
+        if (typeof categories === 'string') {
+            categories = [[categories, person[4] || 'Unknown']];
+        } else if (!categories) {
+            categories = [["Other", "Unknown"]];
+        }
+
+        // Use Sets so a person isn't counted twice in "Science" if they are a Physicist AND a Mathematician
+        const uniqueMains = new Set();
+        // ... rest of your code stays exactly the same ...
+        const uniqueSubs = new Set();
+
+        categories.forEach(c => {
+            uniqueMains.add(c[0]);
+            uniqueSubs.add(`${c[0]}|${c[1]}`);
+        });
+
+        uniqueMains.forEach(main => {
+            state.topicCounts.main[main] = (state.topicCounts.main[main] || 0) + 1;
+        });
+        uniqueSubs.forEach(subKey => {
+            state.topicCounts.sub[subKey] = (state.topicCounts.sub[subKey] || 0) + 1;
+        });
     });
 
     mainFilter.innerHTML = '';
@@ -98,8 +120,8 @@ export function resetPanelControls() {
     if (search) search.value = '';
     
     if (sort) {
-        sort.value = 'alpha';
-        // This instantly triggers the sorting math so the list is alphabetical by default!
+        // Change default from 'alpha' to 'remarkability'
+        sort.value = 'remarkability';
         sort.dispatchEvent(new Event('change')); 
     }
 }
