@@ -1,6 +1,7 @@
 // map.js
 import { state } from './state.js';
-import { generatePopupHTML, closeAllPanels, resetPanelControls } from './ui.js'; // <-- Added here!
+import { generatePopupHTML, closeAllPanels, resetPanelControls, applyPanelFiltersAndRender } from './ui.js';
+import { getGeoTree } from './search.js'; 
 
 const globeBounds = L.latLngBounds(L.latLng(-75, -200), L.latLng(85, 200));
 
@@ -43,34 +44,32 @@ export async function renderMarkers() {
     
     state.allPeople.forEach(person => {
         const pId = person[0], pLat = person[1], pLon = person[2];
-        let categories = person[3];
-        let geoTree = person[5] || []; 
-
-        // --- DEFENSIVE DATA FIX ---
-        // If the browser cached the old format (string), seamlessly upgrade it so the app doesn't crash!
-        if (typeof categories === 'string') {
-            categories = [[categories, person[4] || 'Unknown']];
-            geoTree = person[6] || []; // Old data had geoTree at index 6!
-        } else if (!categories) {
-            categories = [["Other", "Unknown"]];
-        }
+        const categories = person[3]; 
+        const geoTree = getGeoTree(person); 
 
         let matchesTopic = false;
         if (mainTopic === 'all') {
             matchesTopic = true;
         } else {
-            // ... rest of your code stays exactly the same ...
             if (subTopic && subTopic !== 'All') {
-                // Must match the EXACT main/sub combination somewhere in their arrays
                 matchesTopic = categories.some(c => c[0] === mainTopic && c[1] === subTopic);
             } else {
-                // Must match the main topic anywhere in their arrays
                 matchesTopic = categories.some(c => c[0] === mainTopic);
             }
         }
 
         if (!matchesTopic) return;
-        if (state.activeZoneFilter !== 'all' && !geoTree.includes(state.activeZoneFilter)) return;
+
+        if (state.activeZoneFilter !== 'all') {
+            let inZone = geoTree.includes(state.activeZoneFilter);
+            if (!inZone && state.searchIndex && state.searchIndex.locations) {
+                const locKey = typeof person[4] === 'string' ? person[4] : (typeof person[5] === 'string' ? person[5] : null);
+                if (locKey && state.searchIndex.locations[locKey]) {
+                    inZone = (state.searchIndex.locations[locKey][2] === state.activeZoneFilter);
+                }
+            }
+            if (!inZone) return;
+        }
 
         geoJsonData.push({
             type: "Feature", properties: { id: pId, categories: categories },
@@ -142,48 +141,22 @@ markersLayer.on('click', async function(e) {
     
     if (expansionZoom > 19) {
         const leaves = await askWorker('getLeaves', { clusterId, limit: Infinity }); 
-        const listContent = document.getElementById('list-content');
         const panel = document.getElementById('cluster-list-panel');
         
         const firstDetails = state.peopleDetails[leaves[0].properties.id] || {};
         document.getElementById('panel-title').innerText = firstDetails.birthplace || "Location";
         document.getElementById('panel-subtitle').innerText = `${leaves.length} People Here`;
-        listContent.innerHTML = '';
         
-        leaves.forEach(leaf => {
-            const basicData = leaf.properties;
-            const details = state.peopleDetails[basicData.id] || {};
-            
-            // 1. Define the name FIRST
-            const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
+        // Pass standard array to central pagination engine
+        state.currentPanelPeople = leaves.map(leaf => ({
+            id: leaf.properties.id,
+            categories: leaf.properties.categories,
+            lat: leaf.geometry.coordinates[1],
+            lon: leaf.geometry.coordinates[0]
+        }));
 
-            const item = document.createElement('div');
-            item.className = 'list-item';
-            
-            // 2. Set attributes AFTER the variables are defined
-            item.setAttribute('data-name', displayName.toLowerCase());
-            item.setAttribute('data-remark', details.remarkability || 0); 
-
-            // Extract just the unique main topics to show under their name in the side panel
-            // Extract just the FIRST main topic to show under their name in the side panel
-            const primaryTopic = (basicData.categories && basicData.categories.length > 0) ? basicData.categories[0][0] : "Other";
-
-            item.innerHTML = `<div><strong>${displayName}</strong></div><div style="font-size:0.85em; color:gray;">${primaryTopic}</div>`;
-            
-            item.onclick = () => {
-                document.getElementById('detail-name').innerText = displayName;
-                const detailContent = document.getElementById('detail-content');
-                // Pass the arrays to the popup generator
-                const popupData = { id: basicData.id, categories: basicData.categories };
-                detailContent.innerHTML = generatePopupHTML(popupData);
-                if(detailContent.querySelector('.popup-title')) detailContent.querySelector('.popup-title').remove();
-                document.getElementById('person-detail-panel').classList.add('open');
-                
-                map.flyTo([leaf.geometry.coordinates[1], leaf.geometry.coordinates[0]], map.getMaxZoom(), { paddingTopLeft: [820, 0], duration: 0.8 });
-            };
-            listContent.appendChild(item);
-        });
         resetPanelControls();
+        applyPanelFiltersAndRender(map);
         panel.classList.add('open');
     } else {
         map.flyTo(marker.getLatLng(), expansionZoom, { duration: 0.5 });

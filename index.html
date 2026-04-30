@@ -5,22 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notable People of Ukraine</title>
 
+    <!-- Supercluster for high-performance marker grouping -->
     <script src="https://unpkg.com/supercluster@8.0.1/dist/supercluster.min.js"></script>
-    
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
+    <!-- SIDE PANEL: Cluster / Zone List -->
     <div id="cluster-list-panel">
         <div class="panel-header" style="flex-direction: column; align-items: flex-start;">
             <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
                 <h2 id="panel-title" style="margin:0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Location Name</h2>
-                <span class="close-panel" onclick="closeAllPanels()">&times;</span>
+                <span class="close-panel" onclick="document.getElementById('cluster-list-panel').classList.remove('open'); document.getElementById('person-detail-panel').classList.remove('open');">&times;</span>
             </div>
             <div id="panel-subtitle" style="font-size: 0.85em; opacity: 0.9; margin-top: 4px;">0 People Here</div>
         </div>
+        
+        <!-- Search & Sort Controls -->
         <div class="panel-controls" style="padding: 10px 15px; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; gap: 8px;">
             <input type="text" id="panel-search" placeholder="Search people here..." style="flex: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px;">
             <select id="panel-sort" style="padding: 6px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
@@ -32,6 +36,7 @@
         <div id="list-content"></div>
     </div>
 
+    <!-- SIDE PANEL: Person Details -->
     <div id="person-detail-panel">
         <div class="panel-header">
             <h2 id="detail-name" style="margin:0;">Name</h2>
@@ -40,27 +45,28 @@
         <div id="detail-content"></div>
     </div>
 
+    <!-- MAIN MAP CONTAINER -->
     <div id="map"></div>
 
+    <!-- TOP UI: Search Bar -->
     <div id="search-container">
-        <input type="text" id="search-input" placeholder="Search for a person..." autocomplete="off">
+        <input type="text" id="search-input" placeholder="Search for a person, city, or region..." autocomplete="off">
         <div id="search-results"></div>
     </div>
 
+    <!-- TOP UI: Filters -->
     <div id="filter-container">
         <button id="theme-toggle">🌙 Switch to Dark Mode</button>
         <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
 
-        <label for="topic-filter"><b>Main Category:</b></label><br>
-        <select id="topic-filter">
-        </select>
+        <label for="topic-filter"><b>Main Category:</b></label>
+        <select id="topic-filter"></select>
         
-        <br>
-        
-        <label id="sub-topic-label" for="sub-topic-filter" style="display: none;"><b>Sub-Category:</b></label><br>
+        <label id="sub-topic-label" for="sub-topic-filter" style="display: none;"><b>Sub-Category:</b></label>
         <select id="sub-topic-filter" style="display: none;"></select>
     </div>
 
+    <!-- Leaflet JS & App Entry Point -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="main.js"></script>
 </body>

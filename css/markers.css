@@ -1,0 +1,71 @@
+/* ==========================================
+   1. CLUSTERS & MARKERS
+   ========================================== */
+.marker-cluster {
+    border-radius: 50% !important; text-align: center; background-clip: padding-box;
+}
+
+.marker-cluster div { 
+    width: 34px !important; height: 34px !important; margin-top: 3px !important; margin-left: 3px !important;   
+    border-radius: 50% !important; line-height: 34px !important; font-size: 11px !important;    
+    color: white !important; font-weight: bold; text-align: center;
+}
+
+.marker-cluster-small { background-color: rgba(56, 189, 248, 0.4) !important; }
+.marker-cluster-small div { background-color: rgba(2, 132, 199, 0.9) !important; }
+.marker-cluster-medium { background-color: rgba(59, 130, 246, 0.4) !important; }
+.marker-cluster-medium div { background-color: rgba(29, 78, 216, 0.9) !important; }
+.marker-cluster-large { background-color: rgba(67, 56, 202, 0.4) !important; }
+.marker-cluster-large div { background-color: rgba(55, 48, 163, 0.9) !important; }
+
+/* Cluster Gradients (Dark Mode) */
+body.dark-mode .marker-cluster-small { background-color: rgba(253, 224, 71, 0.4) !important; }
+body.dark-mode .marker-cluster-small div { background-color: rgba(234, 179, 8, 0.9) !important; }
+body.dark-mode .marker-cluster-medium { background-color: rgba(251, 146, 60, 0.4) !important; }
+body.dark-mode .marker-cluster-medium div { background-color: rgba(234, 88, 12, 0.9) !important; }
+body.dark-mode .marker-cluster-large { background-color: rgba(248, 113, 113, 0.4) !important; }
+body.dark-mode .marker-cluster-large div { background-color: rgba(220, 38, 38, 0.9) !important; }
+body.dark-mode .marker-cluster div { text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); }
+
+.custom-dot-marker { background-color: #1e40af; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.3); }
+body.dark-mode .custom-dot-marker { background-color: #fbbf24; border: 2px solid #111827; }
+
+/* ==========================================
+   2. MARKER PULSE ANIMATION
+   ========================================== */
+@keyframes pulseMarker {
+    0% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(30, 64, 175, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0); }
+}
+
+@keyframes pulseMarkerDark {
+    0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+}
+
+.active-pulse { animation: pulseMarker 2s infinite !important; z-index: 1000 !important; }
+body.dark-mode .active-pulse { animation: pulseMarkerDark 2s infinite !important; }
+
+/* ==========================================
+   3. LEAFLET POPUP "CARDS"
+   ========================================== */
+.leaflet-popup-content-wrapper {
+    padding: 0 !important; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.leaflet-popup-content { margin: 0 !important; width: 300px !important; }
+
+.popup-container { padding: 0; }
+.popup-body { padding: 15px; color: #334155; }
+.popup-detail { margin: 5px 0; font-size: 0.9em; }
+.popup-detail b { color: #0f172a; }
+
+.popup-title { 
+    background: #f1f5f9; color: #1e40af; margin: 0; padding: 15px; font-size: 1.2rem; font-weight: 800; border-bottom: 1px solid #e2e8f0;
+}
+
+body.dark-mode .leaflet-popup-content-wrapper, body.dark-mode .leaflet-popup-tip { background: #1f2937 !important; color: #f3f4f6 !important; }
+body.dark-mode .popup-body { color: #d1d5db; }
+body.dark-mode .popup-detail b { color: #f9fafb; }
+body.dark-mode .popup-title { background: #374151; color: #fbbf24; border-bottom: 1px solid #4b5563; }

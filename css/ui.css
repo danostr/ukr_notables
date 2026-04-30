@@ -1,0 +1,92 @@
+/* ==========================================
+   1. FILTER PANEL & THEME TOGGLE
+   ========================================== */
+#filter-container {
+    position: absolute; 
+    top: 20px; 
+    right: 20px; 
+    z-index: 1000; 
+    background: white; 
+    padding: 15px; 
+    border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+#filter-container br { display: none; }
+
+#filter-container label {
+    display: block; font-size: 0.9rem; color: #334155; margin-top: 10px; margin-bottom: 5px;
+}
+#filter-container label:first-child { margin-top: 0; }
+
+#filter-container select { 
+    width: 200px; display: block; margin: 0; padding: 8px; border-radius: 6px; border: 1px solid #ddd; outline: none; 
+}
+
+#theme-toggle {
+    margin-top: 0px; width: 100%; padding: 8px; background-color: #0057b7; color: white;
+    border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s;
+}
+#theme-toggle:hover { background-color: #004494; }
+
+/* Dark Mode Overrides */
+body.dark-mode #filter-container { background-color: #1f2937; border-color: #374151; }
+body.dark-mode #filter-container label { color: #d1d5db; }
+body.dark-mode #filter-container select { background-color: #374151; color: #ffffff; border: 1px solid #4b5563; }
+body.dark-mode #theme-toggle { background-color: #fbbf24; color: #111827; }
+body.dark-mode #theme-toggle:hover { background-color: #f59e0b; }
+
+/* ==========================================
+   2. SEARCH PANEL
+   ========================================== */
+#search-container {
+    position: absolute; top: 20px; right: 270px; width: 400px; max-width: 90vw; 
+    z-index: 1000; background: white; border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column;
+}
+
+#search-input {
+    width: 100%; padding: 14px 20px; font-size: 1rem; border: none; border-radius: 12px; 
+    outline: none; background: transparent; color: #334155; box-sizing: border-box; font-weight: 500;
+}
+
+#search-results {
+    max-height: 350px; overflow-y: auto; display: none; border-top: 1px solid #e2e8f0;
+}
+
+.search-result-item {
+    padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; transition: background 0.2s;
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: #f8fafc; }
+
+/* Dark Mode Overrides */
+body.dark-mode #search-container { background: #1f2937; border-color: #374151; }
+body.dark-mode #search-input { color: #f3f4f6; }
+body.dark-mode #search-input::placeholder { color: #9ca3af; }
+body.dark-mode #search-results { border-top-color: #374151; }
+body.dark-mode .search-result-item { border-bottom-color: #374151; color: #d1d5db; }
+body.dark-mode .search-result-item:hover { background: #374151; }
+
+/* ==========================================
+   3. CUSTOM LEAFLET ZOOM CONTROLS
+   ========================================== */
+.leaflet-control-zoom.leaflet-bar {
+    border: none !important; box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important; border-radius: 8px !important; overflow: hidden !important; 
+}
+.leaflet-control-zoom a {
+    background-color: white !important; color: #0057b7 !important; font-weight: bold !important; font-size: 16px !important;
+    border-radius: 0 !important; width: 30px !important; height: 30px !important; line-height: 30px !important;
+    border: none !important; margin: 0 !important; transition: background-color 0.2s ease;
+}
+.leaflet-control-zoom a:first-child { border-bottom: 1px solid #e2e8f0 !important; }
+.leaflet-control-zoom a:hover { background-color: #f1f5f9 !important; }
+
+body.dark-mode .leaflet-control-zoom a { background-color: #1f2937 !important; color: #fbbf24 !important; }
+body.dark-mode .leaflet-control-zoom a:first-child { border-bottom: 1px solid #4b5563 !important; }
+body.dark-mode .leaflet-control-zoom a:hover { background-color: #374151 !important; }
+
+body.dark-mode .leaflet-control-attribution { background-color: rgba(31, 41, 55, 0.8) !important; color: #d1d5db !important; }
+body.dark-mode .leaflet-control-attribution a { color: #fbbf24 !important; text-decoration: none; }
+body.dark-mode .leaflet-control-attribution a:hover { color: #f59e0b !important; text-decoration: underline; }
