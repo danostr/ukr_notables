@@ -133,10 +133,16 @@ markersLayer.on('click', async function(e) {
         leaves.forEach(leaf => {
             const basicData = leaf.properties;
             const details = state.peopleDetails[basicData.id] || {};
-            const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
-
             const item = document.createElement('div');
             item.className = 'list-item';
+            
+            // Set the real remarkability score from our new JSON data
+            item.setAttribute('data-name', displayName.toLowerCase());
+            item.setAttribute('data-remark', details.remarkability || 0); // <-- UPDATED
+
+            item.innerHTML = `<div><strong>${displayName}</strong></div>...`;
+            const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
+
                     
             // --- ADD THESE TWO LINES ---
             item.setAttribute('data-name', displayName.toLowerCase());

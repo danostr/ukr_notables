@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sortType === 'alpha') {
                     return a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'));
                 } else if (sortType === 'remarkability') {
-                    // Placeholder: Will sort high to low once we inject real remarkability data!
+                    // Sort Descending: Higher remarkability scores come first
                     return parseInt(b.getAttribute('data-remark')) - parseInt(a.getAttribute('data-remark'));
                 }
                 return 0;
