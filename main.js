@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     if (st === 'All') {
                         count = state.topicCounts.main[selectedMain] || 0;
-                        opt.innerText = `All in ${selectedMain} (${count.toLocaleString()})`;
+                        opt.innerText = `All (${count.toLocaleString()})`;
                     } else {
                         count = state.topicCounts.sub[`${selectedMain}|${st}`] || 0;
                         opt.innerText = `${st} (${count.toLocaleString()})`;
