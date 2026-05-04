@@ -4,6 +4,17 @@
  */
 import { state } from './state.js';
 
+// --- JIT SILENT PRELOADER ---
+// Keeps track of what we've already fetched so we don't waste bandwidth
+const preloadedImages = new Set();
+
+export function silentPreload(url) {
+    if (!url || preloadedImages.has(url)) return;
+    preloadedImages.add(url);
+    const img = new Image(); // Forces the browser to download and cache the image silently
+    img.src = url;
+}
+
 // Centralized localization handler
 export function getLocalizedName(details, query, fallback) {
     if (!details) return fallback;
@@ -16,26 +27,66 @@ export function generatePopupHTML(basicData) {
     const details = state.peopleDetails[basicData.id];
     if (!details) return `<div class="popup-container"><p>Loading details...</p></div>`;
 
+    const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
+
+    // 1. Calculate Age & Format Dates
+    const calculateAge = (dob, dod) => {
+        if (!dob) return '';
+        const birthDate = new Date(dob);
+        const endDate = dod ? new Date(dod) : new Date();
+        let age = endDate.getFullYear() - birthDate.getFullYear();
+        const m = endDate.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && endDate.getDate() < birthDate.getDate())) age--;
+        return age;
+    };
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        return isNaN(d) ? dateStr : d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    };
+
+    let lifeSpanHTML = '';
+    if (details.dob) {
+        const dobStr = formatDate(details.dob);
+        if (details.dod) {
+            const dodStr = formatDate(details.dod);
+            const age = calculateAge(details.dob, details.dod);
+            lifeSpanHTML = `<p class="popup-detail"><b>Lifespan:</b> ${dobStr} – ${dodStr} (Age ${age})</p>`;
+        } else {
+            const age = calculateAge(details.dob, null);
+            lifeSpanHTML = `<p class="popup-detail"><b>Born:</b> ${dobStr} (Age ${age})</p>`;
+        }
+    }
+
+    // 2. Build Image HTML
+    const imageHTML = details.image 
+        ? `<div class="popup-image-wrapper"><img src="${details.image}" alt="${displayName}" class="popup-image"></div>` 
+        : '';
+
+    // 3. Format Topic standardly
+    const firstCategory = (basicData.categories && basicData.categories.length > 0) ? basicData.categories[0] : ["Other", "Unknown"];
+    const topicText = `${firstCategory[0]}${firstCategory[1] !== 'Unknown' ? ` > ${firstCategory[1]}` : ''}`;
+    const categoriesHTML = `<p class="popup-detail"><b>Topic:</b> ${topicText}</p>`;
+
+    // 4. Build Occupations & Wiki Links
+    const occupationsHTML = (details.occupations && details.occupations.length > 0) 
+        ? `<p class="popup-detail"><b>Occupation:</b> ${details.occupations.join(', ')}</p>` : '';
+
     let wikiButtonsHTML = `<div class="wiki-button-container">`;
     if (details.wiki_en) wikiButtonsHTML += `<a href="${details.wiki_en}" target="_blank" class="wiki-btn btn-en">EN</a>`;
     if (details.wiki_uk) wikiButtonsHTML += `<a href="${details.wiki_uk}" target="_blank" class="wiki-btn btn-uk">UA</a>`;
     if (details.wiki_ru) wikiButtonsHTML += `<a href="${details.wiki_ru}" target="_blank" class="wiki-btn btn-ru">RU</a>`;
     wikiButtonsHTML += `</div>`;
 
-    const occupationsHTML = (details.occupations && details.occupations.length > 0) 
-        ? `<p class="popup-detail"><b>Occupation:</b> ${details.occupations.join(', ')}</p>` : '';
-
-    const displayName = details.name_en || details.name_uk || details.name_ru || "Unknown Name";
-
-    const firstCategory = (basicData.categories && basicData.categories.length > 0) ? basicData.categories[0] : ["Other", "Unknown"];
-    const categoriesHTML = `<span class="popup-category" style="display:inline-block; margin-bottom:4px;">${firstCategory[0]}${firstCategory[1] !== 'Unknown' ? ` > ${firstCategory[1]}` : ''}</span>`;
-
     return `
         <div class="popup-container">
+            ${imageHTML}
             <h3 class="popup-title">${displayName}</h3>
             <div class="popup-body">
+                ${categoriesHTML}
                 <p class="popup-detail"><b>Birthplace:</b> ${details.birthplace || 'Unknown'}</p>
-                <div style="margin-bottom: 8px;">${categoriesHTML}</div>
+                ${lifeSpanHTML}
                 ${occupationsHTML}
                 ${wikiButtonsHTML}
             </div>
@@ -160,6 +211,7 @@ export function renderPanelList(mapInstance, query = "") {
     
     chunk.forEach(person => {
         const details = state.peopleDetails[person.id] || {};
+        if (details.image) silentPreload(details.image);
         const displayName = getLocalizedName(details, query, "Unknown Name");
         const primaryTopic = (person.categories && person.categories.length > 0 && typeof person.categories[0] !== 'string') ? person.categories[0][0] : "Other";
         
@@ -175,7 +227,8 @@ export function renderPanelList(mapInstance, query = "") {
             document.getElementById('person-detail-panel').classList.add('open');
             
             if (mapInstance && person.lat && person.lon) {
-                mapInstance.flyTo([person.lat, person.lon], mapInstance.getMaxZoom(), { paddingTopLeft: [820, 0], duration: 0.8 });
+                // THE FIX: Changed mapInstance.getMaxZoom() to 14
+                mapInstance.flyTo([person.lat, person.lon], 14, { paddingTopLeft: [820, 0], duration: 0.8 });
             }
         };
         listContent.appendChild(item);

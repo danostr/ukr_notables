@@ -50,7 +50,11 @@
 
     <!-- TOP UI: Search Bar -->
     <div id="search-container">
-        <input type="text" id="search-input" placeholder="Search for a person, city, or region..." autocomplete="off">
+        <!-- Wraps the input and the new button together -->
+        <div class="search-input-wrapper">
+            <input type="text" id="search-input" placeholder="Search for a person, city, or region..." autocomplete="off">
+            <button id="search-btn" aria-label="Search">🔍</button>
+        </div>
         <div id="search-results"></div>
     </div>
 
