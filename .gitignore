@@ -4,6 +4,7 @@
 # ==========================================
 
 # Ignore the backend data processing pipeline (scripts and raw data)
+# We only want the final map_data_with_topics.json in the repo
 data_pipeline/
 data/
 
@@ -11,4 +12,5 @@ data/
 __pycache__/
 
 # Ignore local debugging logs and personal scratchpad notes
+debug_error.txt
 .ideas.txt
