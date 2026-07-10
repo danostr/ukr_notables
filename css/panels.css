@@ -19,14 +19,26 @@
 .list-item { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s; }
 .list-item:hover { background: #f8fafc; }
 
+/* --- PERSON DETAIL PANEL (DYNAMIC AUTO-HEIGHT) --- */
 #person-detail-panel {
-    position: absolute; bottom: -60vh; left: 370px; width: 400px; height: 55vh;
+    position: absolute; 
+    bottom: -800px; /* Hides it deeply off-screen so the slide-up animation is smooth */
+    left: 370px; 
+    width: 400px; 
+    
+    /* THE MAGIC: Dynamically resizes based on content, but never exceeds 75% of the screen */
+    height: auto; 
+    max-height: 75vh; 
+    
     background: white; z-index: 2005; transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 -10px 30px rgba(0,0,0,0.1); border-radius: 16px 16px 16px 16px;
+    z-index: 2005;
+    transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.1); 
+    border-radius: 16px; /* Square at the bottom, rounded at the top */
     display: flex; flex-direction: column; overflow: hidden;
 }
 #person-detail-panel.open { bottom: 0; }
-#detail-content { flex: 1; overflow-y: auto; padding: 25px; line-height: 1.6; }
+#detail-content { flex: 1; overflow-y: auto; padding: 15px 25px 10px 25px; line-height: 1.6; }
 
 /* Dark Mode Overrides */
 #person-detail-panel .panel-header { background: #f1f5f9 !important; color: #1e40af !important; border-bottom: 1px solid #e2e8f0; }
@@ -76,3 +88,71 @@ body.dark-mode .leaflet-container a.btn-ru, body.dark-mode #detail-content a.btn
 
 body.dark-mode .load-more-btn { background: #374151; border-color: #4b5563; color: #fbbf24; }
 body.dark-mode .load-more-btn:hover { background: #4b5563; border-color: #6b7280; box-shadow: 0 4px 6px rgba(0,0,0,0.4); }
+
+/* ==========================================
+   POPUP & PANEL IMAGES (BASE STYLES)
+   ========================================== */
+/* 1. Base Map Popup Wrapper (Increased Height) */
+.popup-image-wrapper {
+    width: 100%;
+    /* FIX 1: Increased from 140px to 200px so map popups are much taller */
+    height: 200px; 
+    background: #e2e8f0;
+    overflow: hidden; /* Keeps the map popup image cleanly inside the box */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.popup-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center; 
+}
+
+/* ==========================================
+   SIDE PANEL OVERRIDES (PERSON DETAILS)
+   ========================================== */
+/* 2. Side Panel Wrapper */
+#detail-content .popup-image-wrapper {
+    height: auto;
+    background: transparent; 
+    margin-bottom: 0px; 
+    border: none;
+    
+    /* FIX 2: Removes the clipping mask so the shadow can finally escape the box! */
+    overflow: visible; 
+    padding-bottom: 0px; /* Gives the shadow physical space to render */
+}
+
+/* 3. The Full Portrait Image */
+#detail-content .popup-image {
+    width: auto;           
+    max-width: 100%;       
+    height: auto;
+    max-height: 280px; /* Bumped up slightly so the portrait has more breathing room */
+    object-fit: contain;   
+    border-radius: 8px;
+    
+    /* The shadow is now free to shine */
+    box-shadow: 
+        0 10px 25px -5px rgba(0, 0, 0, 0.15), 
+        0 8px 10px -6px rgba(0, 0, 0, 0.1); 
+}
+
+/* ==========================================
+   DARK MODE ADAPTATIONS
+   ========================================== */
+body.dark-mode .popup-image-wrapper {
+    background: #374151;
+    border-color: #4b5563;
+}
+
+body.dark-mode #detail-content .popup-image {
+    box-shadow: 
+        0 10px 25px -5px rgba(0, 0, 0, 0.5), 
+        0 8px 10px -6px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05); 
+}

@@ -57,7 +57,7 @@ body.dark-mode .active-pulse { animation: pulseMarkerDark 2s infinite !important
 .leaflet-popup-content { margin: 0 !important; width: 300px !important; }
 
 .popup-container { padding: 0; }
-.popup-body { padding: 15px; color: #334155; }
+.popup-body { padding: 5px 15px 15px 15px; color: #334155; }
 .popup-detail { margin: 5px 0; font-size: 0.9em; }
 .popup-detail b { color: #0f172a; }
 
@@ -69,3 +69,31 @@ body.dark-mode .leaflet-popup-content-wrapper, body.dark-mode .leaflet-popup-tip
 body.dark-mode .popup-body { color: #d1d5db; }
 body.dark-mode .popup-detail b { color: #f9fafb; }
 body.dark-mode .popup-title { background: #374151; color: #fbbf24; border-bottom: 1px solid #4b5563; }
+
+/* ==========================================
+   4. MAP POPUP IMAGES
+   ========================================== */
+.popup-image-wrapper {
+    width: 100%;
+    height: 140px; /* Keep it compact for the map canvas */
+    background: #e2e8f0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.popup-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    
+    /* THE FIX: Centers the image perfectly so you don't chop off their face */
+    object-position: center center; 
+}
+
+body.dark-mode .popup-image-wrapper {
+    background: #374151;
+    border-color: #4b5563;
+}
