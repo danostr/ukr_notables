@@ -1,6 +1,6 @@
 // map.js
 import { state } from './state.js';
-import { generatePopupHTML, closeAllPanels, resetPanelControls, applyPanelFiltersAndRender, silentPreload } from './ui.js';
+import { generatePopupHTML, closeAllPanels, resetPanelControls, applyPanelFiltersAndRender } from './ui.js';
 import { getGeoTree } from './search.js'; 
 
 const globeBounds = L.latLngBounds(L.latLng(-75, -200), L.latLng(85, 200));
@@ -9,7 +9,6 @@ export const map = L.map('map', {
     preferCanvas: true, center: [48.3794, 31.1656], zoomDelta: 0.6, 
     zoomSnap: 0.15, wheelPxPerZoomLevel: 60, zoom: 6, minZoom: 2.25, 
     maxBounds: globeBounds, maxBoundsViscosity: 1.0     
-    // FIX 1: Removed the override! Leaflet will now natively close popups ONLY on a true click, not a drag.
 });
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -47,7 +46,6 @@ export async function renderMarkers() {
         const pId = person[0], pLat = person[1], pLon = person[2];
         const categories = person[3]; 
         const geoTree = getGeoTree(person); 
-        if (state.globalSearchIds && !state.globalSearchIds.has(pId)) return;
 
         let matchesTopic = false;
         if (mainTopic === 'all') {
@@ -91,24 +89,7 @@ async function updateScreen() {
     ];
     
     const visibleClusters = await askWorker('getClusters', { bbox, zoom: map.getZoom() });
-    
-    // FIX 2: Find the currently open popup marker BEFORE we wipe the map
-    let activeMarkerId = null;
-    let activeMarkerLayer = null;
-
-    map.eachLayer(layer => {
-        if (layer instanceof L.Popup && layer._source && layer._source.personData) {
-            activeMarkerId = layer._source.personData.id;
-            activeMarkerLayer = layer._source;
-        }
-    });
-
-    // FIX 3: Clear all markers EXCEPT the active one! (Kills the flicker completely)
-    markersLayer.eachLayer(layer => {
-        if (layer !== activeMarkerLayer) {
-            markersLayer.removeLayer(layer);
-        }
-    });
+    markersLayer.clearLayers(); 
 
     visibleClusters.forEach(feature => {
         const [lon, lat] = feature.geometry.coordinates;
@@ -126,14 +107,6 @@ async function updateScreen() {
             clusterMarker.clusterId = feature.properties.cluster_id; 
             markersLayer.addLayer(clusterMarker);
         } else {
-            // FIX 4: If this feature is the marker we safely preserved, DO NOT recreate it!
-            if (activeMarkerId === feature.properties.id) {
-                if (activeMarkerLayer && activeMarkerLayer.bringToFront) {
-                    activeMarkerLayer.bringToFront(); // Force it to the top layer
-                }
-                return;
-            }
-
             const isDark = document.body.classList.contains('dark-mode');
             const personMarker = L.circleMarker([lat, lon], { 
                 radius: 6, fillColor: isDark ? '#fbbf24' : '#1e40af', 
@@ -143,9 +116,6 @@ async function updateScreen() {
             personMarker.personData = feature.properties;
             personMarker.bindPopup((layer) => generatePopupHTML(layer.personData));
             markersLayer.addLayer(personMarker);
-
-            const details = state.peopleDetails[feature.properties.id] || {};
-            if (details.image) silentPreload(details.image);
         }
     });
 }
@@ -158,13 +128,7 @@ map.on('moveend', () => {
 
 map.on('click', (e) => {
     if (!e.originalEvent.target.closest('.leaflet-marker-icon') && !e.originalEvent.target.closest('.leaflet-popup')) {
-        const detailPanel = document.getElementById('person-detail-panel');
-        const listPanel = document.getElementById('cluster-list-panel');
-        if (detailPanel) detailPanel.classList.remove('open');
-        if (listPanel) listPanel.classList.remove('open');
-        document.querySelectorAll('.active-pulse').forEach(el => el.classList.remove('active-pulse'));
-        
-        // Note: Leaflet will now handle closing the map popup natively!
+        closeAllPanels(map);
     }
 });
 
@@ -183,6 +147,7 @@ markersLayer.on('click', async function(e) {
         document.getElementById('panel-title').innerText = firstDetails.birthplace || "Location";
         document.getElementById('panel-subtitle').innerText = `${leaves.length} People Here`;
         
+        // Pass standard array to central pagination engine
         state.currentPanelPeople = leaves.map(leaf => ({
             id: leaf.properties.id,
             categories: leaf.properties.categories,
@@ -192,10 +157,6 @@ markersLayer.on('click', async function(e) {
 
         resetPanelControls();
         applyPanelFiltersAndRender(map);
-        
-        // FIX 5: Explicitly close map popups when opening the side panel
-        map.closePopup();
-        
         panel.classList.add('open');
     } else {
         map.flyTo(marker.getLatLng(), expansionZoom, { duration: 0.5 });
